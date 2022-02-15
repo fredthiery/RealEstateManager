@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_property_list">Propriétés</string>
+    <string name="title_property_detail">Détails de la propriété</string>
+    <string name="add_a_property">Ajout d\'une propriété</string>
+    <string name="title_activity_main">Real Estate Manager</string>
+    <string name="edit_this_property">Modifier cette propriété</string>
+    <string name="search">Rechercher</string>
+    <string name="app_name">Real Estate Manager</string>
+    <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
+    <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
+    <string name="media">Media</string>
+</resources>
