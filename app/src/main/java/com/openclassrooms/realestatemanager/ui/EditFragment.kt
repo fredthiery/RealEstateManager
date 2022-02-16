@@ -11,6 +11,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
@@ -27,9 +28,9 @@ class EditFragment : Fragment() {
 
     private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!
-    private var propertyId: String? = null
     private lateinit var property: Property
     private var latestTmpUri: Uri? = null
+    private val args: EditFragmentArgs by navArgs()
 
     private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
@@ -45,14 +46,6 @@ class EditFragment : Fragment() {
             uri?.let(this::insertPhoto)
         }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            propertyId = it.getString("PROPERTY")
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,8 +53,8 @@ class EditFragment : Fragment() {
     ): View? {
         _binding = FragmentEditBinding.inflate(inflater, container, false)
 
-        if (propertyId != null) {
-            viewModel.getProperty(propertyId!!).observe(viewLifecycleOwner) {
+        if (args.propertyId != null) {
+            viewModel.getProperty(args.propertyId!!).observe(viewLifecycleOwner) {
                 property = it
                 bind()
             }

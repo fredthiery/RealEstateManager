@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@id/list_dest"
+        android:icon="@drawable/ic_baseline_view_list"
+        android:title="@string/list_label" />
+    <item
+        android:id="@id/maps_dest"
+        android:icon="@drawable/ic_baseline_map"
+        android:title="@string/map_label" />
+</menu>

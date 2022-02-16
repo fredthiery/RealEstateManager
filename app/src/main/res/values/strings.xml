@@ -36,6 +36,8 @@
     <string name="number_of_bathrooms">Number of bathrooms</string>
     <string name="number_of_bedrooms">Number of bedrooms</string>
     <string name="location">Location</string>
-    <string name="edition">Edition</string>
+    <string name="edit_label">Edition</string>
     <string name="media">Media</string>
+    <string name="list_label">List</string>
+    <string name="map_label">Map</string>
 </resources>

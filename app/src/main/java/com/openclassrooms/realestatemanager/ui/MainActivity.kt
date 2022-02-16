@@ -5,11 +5,14 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
@@ -30,15 +33,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        val rightPaneNavController =
+            (supportFragmentManager.findFragmentById(R.id.right_pane) as NavHostFragment).navController
+        appBarConfiguration = AppBarConfiguration(rightPaneNavController.graph)
+        setupActionBarWithNavController(rightPaneNavController, appBarConfiguration)
+
+        val leftPaneNavController =
+            (supportFragmentManager.findFragmentById(R.id.left_pane) as NavHostFragment).navController
+        setupBottomNavMenu(leftPaneNavController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
+        val navController = findNavController(R.id.right_pane)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
@@ -52,12 +58,17 @@ class MainActivity : AppCompatActivity() {
 
         when (item.itemId) {
             R.id.action_new -> {
-                binding.navHostFragment.findNavController().navigate(R.id.edit_dest)
+                binding.rightPane.findNavController().navigate(R.id.edit_dest)
                 binding.slidingPaneLayout.openPane()
             }
             R.id.action_edit -> {}
             R.id.action_search -> {}
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setupBottomNavMenu(navController: NavController) {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        bottomNav?.setupWithNavController(navController)
     }
 }
