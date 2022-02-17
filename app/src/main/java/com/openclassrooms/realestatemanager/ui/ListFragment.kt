@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui
 
-import com.openclassrooms.realestatemanager.ui.PropertyAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,6 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
@@ -39,11 +37,11 @@ class ListFragment : Fragment() {
 
         val slidingPaneLayout = requireActivity().findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)
 
-        val adapter = PropertyAdapter {
-            viewModel.propertyId.value = it.id
+        val adapter = ListingAdapter {
+            viewModel.listingId.value = it.id
             slidingPaneLayout.openPane()
         }
-        binding.propertyList.adapter = adapter
+        binding.listingList.adapter = adapter
 
         slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
 
@@ -53,7 +51,7 @@ class ListFragment : Fragment() {
             ListOnBackPressedCallback(slidingPaneLayout)
         )
 
-        viewModel.allProperties.observe(viewLifecycleOwner, adapter::submitList)
+        viewModel.listings.observe(viewLifecycleOwner, adapter::submitList)
     }
 
     override fun onDestroyView() {

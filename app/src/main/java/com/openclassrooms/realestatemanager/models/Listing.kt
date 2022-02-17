@@ -4,10 +4,12 @@ import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.clustering.ClusterItem
 import java.util.*
 
 @Entity
-data class Property(
+data class Listing (
         @PrimaryKey val id: String,
         var type: String,
         var price: Int,
@@ -15,11 +17,24 @@ data class Property(
         var numberOfRooms: Int? = 1,
         var description: String? = null,
         var address: String,
+        var latLng: LatLng,
         var sellStatus: Boolean,
         var onSaleDate: Calendar,
         var sellDate: Calendar? = null,
         var realtor: String? = null
-)
+) : ClusterItem {
+        override fun getPosition(): LatLng {
+                return latLng
+        }
+
+        override fun getTitle(): String {
+                return type
+        }
+
+        override fun getSnippet(): String? {
+                return description
+        }
+}
 
 class Converters {
         @TypeConverter
@@ -36,4 +51,11 @@ class Converters {
         fun fromUri(uri: Uri?): String = uri.toString()
         @TypeConverter
         fun toUri(string: String?): Uri = Uri.parse(string)
+        @TypeConverter
+        fun fromLatLng(latLng: LatLng): String = latLng.latitude.toString() + "," + latLng.longitude.toString()
+        @TypeConverter
+        fun toLatLng(string: String): LatLng {
+                val strings = string.split(",")
+                return LatLng(strings[0].toDouble(),strings[1].toDouble())
+        }
 }

@@ -6,34 +6,35 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.models.Converters
 import com.openclassrooms.realestatemanager.models.Photo
-import com.openclassrooms.realestatemanager.models.Property
+import com.openclassrooms.realestatemanager.models.Listing
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-@Database(entities = [Property::class, Photo::class], version = 1)
+@Database(entities = [Listing::class, Photo::class], version = 1)
 @TypeConverters(Converters::class)
-abstract class PropertyDatabase : RoomDatabase() {
-    abstract fun propertyDao(): PropertyDao
+abstract class ListingDatabase : RoomDatabase() {
+    abstract fun listingDao(): ListingDao
 
     companion object {
         @Volatile
-        private var INSTANCE: PropertyDatabase? = null
+        private var INSTANCE: ListingDatabase? = null
 
         fun getDatabase(
             context: Context,
             scope: CoroutineScope
-        ): PropertyDatabase {
+        ): ListingDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    PropertyDatabase::class.java,
-                    "property_database"
+                    ListingDatabase::class.java,
+                    "listing_database"
                 )
                     .fallbackToDestructiveMigration()
-                    .addCallback(PropertyDatabaseCallback(scope))
+                    .addCallback(ListingDatabaseCallback(scope))
                     .build()
                 INSTANCE = instance
                 instance
@@ -41,7 +42,7 @@ abstract class PropertyDatabase : RoomDatabase() {
         }
     }
 
-    private class PropertyDatabaseCallback(
+    private class ListingDatabaseCallback(
         private val scope: CoroutineScope
     ) : RoomDatabase.Callback() {
 
@@ -49,16 +50,16 @@ abstract class PropertyDatabase : RoomDatabase() {
             super.onCreate(db)
             INSTANCE?.let { database ->
                 scope.launch {
-                    populateDatabase(database.propertyDao())
+                    populateDatabase(database.listingDao())
                 }
             }
         }
 
-        suspend fun populateDatabase(propertyDao: PropertyDao) {
+        suspend fun populateDatabase(listingDao: ListingDao) {
             val cal: Calendar = Calendar.getInstance()
             cal.set(2022, 2, 3, 12, 30)
-            propertyDao.insert(
-                Property(
+            listingDao.insert(
+                Listing(
                     "1",
                     "Appartement",
                     1500000,
@@ -66,6 +67,7 @@ abstract class PropertyDatabase : RoomDatabase() {
                     4,
                     "Bel appartement de luxe",
                     "3 place du capitole, New York",
+                    LatLng(48.845,2.367),
                     false,
                     cal,
                     null,
@@ -73,8 +75,8 @@ abstract class PropertyDatabase : RoomDatabase() {
                 )
             )
             cal.set(2022, 1, 7, 10, 0)
-            propertyDao.insert(
-                Property(
+            listingDao.insert(
+                Listing(
                     "2",
                     "Maison",
                     3000000,
@@ -82,6 +84,7 @@ abstract class PropertyDatabase : RoomDatabase() {
                     6,
                     "Magnifique maison",
                     "2 rue inconnue, New York",
+                    LatLng(48.640,2.256),
                     false,
                     cal,
                     null,

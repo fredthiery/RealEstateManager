@@ -12,12 +12,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.models.Photo
-import com.openclassrooms.realestatemanager.models.Property
+import com.openclassrooms.realestatemanager.models.Listing
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 import java.io.File
@@ -26,9 +28,11 @@ import java.util.*
 
 class EditFragment : Fragment() {
 
+    // TODO: Utiliser Place Autocomplete Widget pour ajouter l'adresse et récupérer les coordonnées
+
     private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!
-    private lateinit var property: Property
+    private lateinit var listing: Listing
     private var latestTmpUri: Uri? = null
     private val args: EditFragmentArgs by navArgs()
 
@@ -53,52 +57,67 @@ class EditFragment : Fragment() {
     ): View? {
         _binding = FragmentEditBinding.inflate(inflater, container, false)
 
-        if (args.propertyId != null) {
-            viewModel.getProperty(args.propertyId!!).observe(viewLifecycleOwner) {
-                property = it
+        // Recycler view for displaying photos
+        binding.recyclerViewMedia.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val adapter = PhotoAdapter()
+        binding.recyclerViewMedia.adapter = adapter
+
+        // Edit an existing listing or create a new one
+        if (args.listingId != null) {
+            viewModel.getListing(args.listingId!!).observe(viewLifecycleOwner) {
+                // TODO viewModel should return an empty listing if Id doesn't exist
+                listing = it
                 bind()
+                viewModel.getPhotos(listing.id).observe(viewLifecycleOwner, adapter::submitList)
             }
         } else {
-            property = Property(
+            listing = Listing(
                 id = Calendar.getInstance().timeInMillis.toString(),
                 type = "",
                 price = 0,
                 address = "",
+                latLng = LatLng(0.0,0.0),
                 sellStatus = false,
                 onSaleDate = Calendar.getInstance()
             )
+            viewModel.getPhotos(listing.id).observe(viewLifecycleOwner, adapter::submitList)
         }
 
-        binding.fabSave.setOnClickListener { viewModel.insert(property) }
+        // Floating action button to save changes
+        binding.fabSave.setOnClickListener { viewModel.insert(listing) }
 
+        // Floating action buttons to add photos
         binding.fabTakePicture.setOnClickListener { takeImage() }
         binding.fabAddPicture.setOnClickListener { selectImageFromGallery() }
 
-        binding.texteditType.doAfterTextChanged { property.type = it.toString() }
-        binding.texteditRooms.doAfterTextChanged { property.numberOfRooms = it.toString().toInt() }
-        binding.texteditDescription.doAfterTextChanged { property.description = it.toString() }
-        binding.texteditAddress.doAfterTextChanged { property.address = it.toString() }
-        binding.texteditPrice.doAfterTextChanged { property.price = it.toString().toInt() }
-        binding.texteditArea.doAfterTextChanged { property.area = it.toString().toInt() }
-        binding.texteditRooms.doAfterTextChanged { property.numberOfRooms = it.toString().toInt() }
+        // Watch changes to textEdits
+        binding.texteditType.doAfterTextChanged { listing.type = it.toString() }
+        binding.texteditRooms.doAfterTextChanged { listing.numberOfRooms = it.toString().toInt() }
+        binding.texteditDescription.doAfterTextChanged { listing.description = it.toString() }
+        binding.texteditAddress.doAfterTextChanged { listing.address = it.toString() }
+        binding.texteditPrice.doAfterTextChanged { listing.price = it.toString().toInt() }
+        binding.texteditArea.doAfterTextChanged { listing.area = it.toString().toInt() }
+        binding.texteditRooms.doAfterTextChanged { listing.numberOfRooms = it.toString().toInt() }
 
+        // Click on a date
         binding.texteditOnSaleDate.setOnClickListener { buttonSelectDate() }
 
         return binding.root
     }
 
     private fun bind() {
-        binding.texteditType.setText(property.type)
-        binding.texteditDescription.setText(property.description)
-        binding.texteditAddress.setText(property.address)
-        binding.texteditRooms.setText(property.numberOfRooms.toString())
-        binding.texteditArea.setText(property.area.toString())
-        binding.texteditPrice.setText(property.price.toString())
+        binding.texteditType.setText(listing.type)
+        binding.texteditDescription.setText(listing.description)
+        binding.texteditAddress.setText(listing.address)
+        binding.texteditRooms.setText(listing.numberOfRooms.toString())
+        binding.texteditArea.setText(listing.area.toString())
+        binding.texteditPrice.setText(listing.price.toString())
         binding.texteditOnSaleDate.setText(
             SimpleDateFormat(
                 "dd/MM/yyyy",
                 Locale.getDefault()
-            ).format(property.onSaleDate.time)
+            ).format(listing.onSaleDate.time)
         )
     }
 
@@ -114,7 +133,7 @@ class EditFragment : Fragment() {
         val datePicker = builder.build()
         datePicker.addOnPositiveButtonClickListener {
             cal.timeInMillis = it
-            property.onSaleDate = cal
+            listing.onSaleDate = cal
             binding.texteditOnSaleDate.setText(
                 SimpleDateFormat(
                     "dd/MM/yyyy",
@@ -151,9 +170,8 @@ class EditFragment : Fragment() {
             id = Calendar.getInstance().timeInMillis.toString(),
             title = "",
             uri = uri,
-            propertyId = property.id
+            listingId = listing.id
         )
-        viewModel.insertPhoto(newPhoto)
-        binding.previewImage.setImageURI(uri)
+        viewModel.insert(newPhoto)
     }
 }

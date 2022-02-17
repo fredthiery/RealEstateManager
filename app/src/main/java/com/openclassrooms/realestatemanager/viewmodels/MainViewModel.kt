@@ -2,44 +2,42 @@ package com.openclassrooms.realestatemanager.viewmodels
 
 import androidx.lifecycle.*
 import com.openclassrooms.realestatemanager.models.Photo
-import com.openclassrooms.realestatemanager.models.Property
-import com.openclassrooms.realestatemanager.models.PropertyShort
-import com.openclassrooms.realestatemanager.repositories.PropertyRepository
+import com.openclassrooms.realestatemanager.models.Listing
+import com.openclassrooms.realestatemanager.repositories.ListingRepository
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val repository: PropertyRepository) : ViewModel() {
-    val allProperties: LiveData<List<Property>> = repository.allProperties.asLiveData()
-    val allShort: LiveData<List<PropertyShort>> = repository.allShort.asLiveData()
+class MainViewModel(private val repository: ListingRepository) : ViewModel() {
+    val listings: LiveData<List<Listing>> = repository.listings.asLiveData()
 
-    val propertyId = MutableLiveData<String>()
-    val currentProperty = Transformations.switchMap(propertyId) {
-        repository.getProperty(it).asLiveData()
+    val listingId = MutableLiveData<String>()
+    val currentListing = Transformations.switchMap(listingId) {
+        repository.getListing(it).asLiveData()
     }
 
-    fun getProperty(id: String): LiveData<Property> {
-        return repository.getProperty(id).asLiveData()
+    fun getListing(id: String): LiveData<Listing> {
+        return repository.getListing(id).asLiveData()
     }
 
-    fun getPhotos(propertyId: String): LiveData<List<Photo>> {
-        return repository.getPhotos(propertyId).asLiveData()
+    fun getPhotos(listingId: String): LiveData<List<Photo>> {
+        return repository.getPhotos(listingId).asLiveData()
     }
 
     // TODO: Ajouter une fonction insertOrUpdate ?
 
-    fun insert(property: Property) = viewModelScope.launch {
-        repository.insert(property)
+    fun insert(listing: Listing) = viewModelScope.launch {
+        repository.insert(listing)
     }
 
-    fun update(property: Property) = viewModelScope.launch {
-        repository.update(property)
+    fun update(listing: Listing) = viewModelScope.launch {
+        repository.update(listing)
     }
 
-    fun insertPhoto(photo: Photo) = viewModelScope.launch {
-        repository.insertPhoto(photo)
+    fun insert(photo: Photo) = viewModelScope.launch {
+        repository.insert(photo)
     }
 }
 
-class MainViewModelFactory(private val repository: PropertyRepository) : ViewModelProvider.Factory {
+class MainViewModelFactory(private val repository: ListingRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

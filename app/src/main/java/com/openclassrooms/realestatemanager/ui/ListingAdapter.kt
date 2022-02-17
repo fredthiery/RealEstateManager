@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.openclassrooms.realestatemanager.databinding.ItemPropertyListBinding
-import com.openclassrooms.realestatemanager.models.Property
+import com.openclassrooms.realestatemanager.databinding.ItemListingListBinding
+import com.openclassrooms.realestatemanager.models.Listing
 
-class PropertyAdapter(private val onItemClicked: (Property) -> Unit) :
-    ListAdapter<Property, PropertyAdapter.ViewHolder>(PropertyDiffCallback) {
+class ListingAdapter(private val onItemClicked: (Listing) -> Unit) :
+    ListAdapter<Listing, ListingAdapter.ViewHolder>(ListingDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemPropertyListBinding.inflate(
+        val binding = ItemListingListBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -28,10 +28,10 @@ class PropertyAdapter(private val onItemClicked: (Property) -> Unit) :
         holder.bind(current)
     }
 
-    inner class ViewHolder(private val binding: ItemPropertyListBinding) :
+    inner class ViewHolder(private val binding: ItemListingListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Property) {
+        fun bind(item: Listing) {
             binding.listTitle.text = item.type
             binding.listNeighborhood.text = item.address
             binding.listPrice.text = item.price.toString()
@@ -39,12 +39,12 @@ class PropertyAdapter(private val onItemClicked: (Property) -> Unit) :
     }
 }
 
-object PropertyDiffCallback : DiffUtil.ItemCallback<Property>() {
-    override fun areItemsTheSame(oldItem: Property, newItem: Property): Boolean {
+object ListingDiffCallback : DiffUtil.ItemCallback<Listing>() {
+    override fun areItemsTheSame(oldItem: Listing, newItem: Listing): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Property, newItem: Property): Boolean {
+    override fun areContentsTheSame(oldItem: Listing, newItem: Listing): Boolean {
         return oldItem == newItem
     }
 }

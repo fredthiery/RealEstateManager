@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/maps_dest"
-        android:name="com.openclassrooms.realestatemanager.MapsFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.MapsFragment"
         android:label="@string/map_label"
         tools:layout="@layout/fragment_maps" />
 </navigation>

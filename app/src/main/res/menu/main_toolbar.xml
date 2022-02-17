@@ -10,6 +10,6 @@
     <item
         android:id="@+id/action_new"
         android:icon="@drawable/ic_baseline_add"
-        android:title="@string/add_a_property"
+        android:title="@string/add_a_listing"
         app:showAsAction="ifRoom" />
 </menu>

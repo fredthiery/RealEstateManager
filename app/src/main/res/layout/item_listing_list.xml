@@ -8,7 +8,7 @@
         android:id="@+id/list_photo"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:contentDescription="@string/property_photo"
+        android:contentDescription="@string/listing_photo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

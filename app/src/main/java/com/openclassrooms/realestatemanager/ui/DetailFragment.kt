@@ -40,23 +40,20 @@ class DetailFragment : Fragment() {
         val adapter = PhotoAdapter()
         binding.recyclerViewMedia.adapter = adapter
 
-        viewModel.currentProperty.observe(viewLifecycleOwner) { property ->
-            binding.detailDescription.text = property.description
-            binding.detailAddress.text = property.address
-            binding.detailRooms.text = property.numberOfRooms.toString()
-            binding.detailSurface.text = property.area.toString()
+        viewModel.currentListing.observe(viewLifecycleOwner) { listing ->
+            binding.detailDescription.text = listing.description
+            binding.detailAddress.text = listing.address
+            binding.detailRooms.text = listing.numberOfRooms.toString()
+            binding.detailSurface.text = listing.area.toString()
 
-            viewModel.getPhotos(property.id).observe(viewLifecycleOwner, adapter::submitList)
+            viewModel.getPhotos(listing.id).observe(viewLifecycleOwner, adapter::submitList)
 
             binding.fabEdit.setOnClickListener {
-                val action = DetailFragmentDirections.actionEdit(property.id)
+                val action = DetailFragmentDirections.actionEdit(listing.id)
                 findNavController().navigate(action)
                 activity?.findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)?.openPane()
             }
         }
-
-
-
         return binding.root
     }
 

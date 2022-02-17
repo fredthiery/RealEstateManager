@@ -9,5 +9,5 @@ data class Photo(
     @PrimaryKey val id: String,
     val title: String,
     val uri: Uri,
-    val propertyId: String
+    val listingId: String
     )
