@@ -21,9 +21,11 @@ data class Listing (
         var sellStatus: Boolean,
         var onSaleDate: Calendar,
         var sellDate: Calendar? = null,
-        var realtor: String? = null
+        var realtor: String? = null,
+        var thumbnail: Uri? = null
 ) : ClusterItem {
-        override fun getPosition(): LatLng {
+
+    override fun getPosition(): LatLng {
                 return latLng
         }
 

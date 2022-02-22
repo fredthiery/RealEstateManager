@@ -31,4 +31,7 @@
     <string name="media">Media</string>
     <string name="list_label">List</string>
     <string name="map_label">Map</string>
+    <string name="photo_title">Title</string>
+    <string name="choose_this_as_thumbnail">Choose this as thumbnail</string>
+    <string name="delete_this_photo">Delete this photo</string>
 </resources>

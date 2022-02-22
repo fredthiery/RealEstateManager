@@ -12,16 +12,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/container_margin"
             android:orientation="vertical"
+            android:padding="@dimen/container_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_type"
+                style="@style/AppTheme.TextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.TextInputLayout">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textedit_type"
@@ -40,9 +40,9 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_description"
+                style="@style/AppTheme.TextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.TextInputLayout">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textedit_description"
@@ -54,24 +54,25 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_address"
+                style="@style/AppTheme.TextInputLayout.ExposedDropDownMenu"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.TextInputLayout">
+                android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/textedit_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/address"
-                    android:lines="5" />
+                    android:inputType="textMultiLine"
+                    android:padding="12dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_price"
+                style="@style/AppTheme.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:prefixText="$"
-                style="@style/AppTheme.TextInputLayout">
+                app:prefixText="$">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textedit_price"
@@ -83,10 +84,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_area"
+                style="@style/AppTheme.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:suffixText="M²"
-                style="@style/AppTheme.TextInputLayout">
+                app:suffixText="M²">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textedit_area"
@@ -98,9 +99,9 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_rooms"
+                style="@style/AppTheme.TextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.TextInputLayout">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textedit_rooms"
@@ -112,9 +113,9 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_on_sale_date"
+                style="@style/AppTheme.TextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.TextInputLayout">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textedit_on_sale_date"
@@ -128,9 +129,9 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_sell_date"
+                style="@style/AppTheme.TextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.TextInputLayout">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textedit_sell_date"

@@ -32,5 +32,11 @@
         <item name="boxStrokeColor">@color/secondaryColor</item>
     </style>
 
+    <style name="AppTheme.TextInputLayout.ExposedDropDownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="hintTextAppearance">@style/TextAppearance.MaterialComponents.Subtitle2</item>
+        <item name="hintTextColor">@color/primaryDarkColor</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="boxStrokeColor">@color/secondaryColor</item>
+    </style>
 
 </resources>

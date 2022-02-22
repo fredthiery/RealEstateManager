@@ -1,8 +1,10 @@
 package com.openclassrooms.realestatemanager.viewmodels
 
 import androidx.lifecycle.*
+import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.models.Listing
+import com.openclassrooms.realestatemanager.models.geoCodingResponse.Place
 import com.openclassrooms.realestatemanager.repositories.ListingRepository
 import kotlinx.coroutines.launch
 
@@ -34,6 +36,14 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
 
     fun insert(photo: Photo) = viewModelScope.launch {
         repository.insert(photo)
+    }
+
+    fun getLocation(address: String): LiveData<List<Place>> {
+        return repository.getLocation(address).asLiveData()
+    }
+
+    fun getLocation(latLng: LatLng): LiveData<List<Place>> {
+        return repository.getLocation(latLng).asLiveData()
     }
 }
 

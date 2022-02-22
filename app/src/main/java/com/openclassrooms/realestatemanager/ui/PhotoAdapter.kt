@@ -6,10 +6,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemPhotoBinding
+import com.openclassrooms.realestatemanager.models.Listing
 import com.openclassrooms.realestatemanager.models.Photo
 
-class PhotoAdapter :
+class PhotoAdapter(private val onItemClicked: (Photo) -> Unit) :
     ListAdapter<Photo, PhotoAdapter.ViewHolder>(PhotoDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,14 +26,18 @@ class PhotoAdapter :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val current = getItem(position)
+        holder.itemView.setOnClickListener { onItemClicked(current) }
         holder.bind(current)
     }
 
-    class ViewHolder(private val binding: ItemPhotoBinding) :
+    inner class ViewHolder(private val binding: ItemPhotoBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: Photo) {
             Glide.with(itemView.context)
                 .load(item.uri)
+                .placeholder(R.drawable.ic_placeholder_building)
+                .apply(RequestOptions.centerCropTransform())
                 .into(binding.image)
         }
     }

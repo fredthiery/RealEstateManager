@@ -5,6 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListingListBinding
 import com.openclassrooms.realestatemanager.models.Listing
 
@@ -22,9 +25,7 @@ class ListingAdapter(private val onItemClicked: (Listing) -> Unit) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val current = getItem(position)
-        holder.itemView.setOnClickListener {
-            onItemClicked(current)
-        }
+        holder.itemView.setOnClickListener { onItemClicked(current) }
         holder.bind(current)
     }
 
@@ -35,6 +36,11 @@ class ListingAdapter(private val onItemClicked: (Listing) -> Unit) :
             binding.listTitle.text = item.type
             binding.listNeighborhood.text = item.address
             binding.listPrice.text = item.price.toString()
+            Glide.with(itemView.context)
+                .load(item.thumbnail)
+                .placeholder(R.drawable.ic_placeholder_building)
+                .apply(RequestOptions.centerCropTransform())
+                .into(binding.listPhoto)
         }
     }
 }

@@ -37,7 +37,7 @@ class DetailFragment : Fragment() {
 
         binding.recyclerViewMedia.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        val adapter = PhotoAdapter()
+        val adapter = PhotoAdapter {}
         binding.recyclerViewMedia.adapter = adapter
 
         viewModel.currentListing.observe(viewLifecycleOwner) { listing ->
