@@ -10,9 +10,15 @@ import com.bumptech.glide.request.RequestOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListingListBinding
 import com.openclassrooms.realestatemanager.models.Listing
+import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
+import java.text.NumberFormat
 
-class ListingAdapter(private val onItemClicked: (Listing) -> Unit) :
+class ListingAdapter(
+    private val viewModel: MainViewModel,
+    private val onItemClicked: (Listing) -> Unit
+) :
     ListAdapter<Listing, ListingAdapter.ViewHolder>(ListingDiffCallback) {
+    private val nFormat: NumberFormat = NumberFormat.getInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemListingListBinding.inflate(
@@ -25,7 +31,10 @@ class ListingAdapter(private val onItemClicked: (Listing) -> Unit) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val current = getItem(position)
-        holder.itemView.setOnClickListener { onItemClicked(current) }
+
+        holder.itemView.setOnClickListener {
+            onItemClicked(current)
+        }
         holder.bind(current)
     }
 
@@ -33,11 +42,19 @@ class ListingAdapter(private val onItemClicked: (Listing) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Listing) {
+            if (viewModel.currentListing.value?.listing?.id == item.id) {
+                itemView.setBackgroundColor(itemView.resources.getColor(R.color.primaryColor))
+            }
+
             binding.listTitle.text = item.type
             binding.listNeighborhood.text = item.address
-            binding.listPrice.text = item.price.toString()
+            binding.listPrice.text = String.format(
+                itemView.resources.getString(R.string.price_format),
+                nFormat.format(item.price)
+            )
+
             Glide.with(itemView.context)
-                .load(item.thumbnail)
+                .load(item.thumbnail?.uri)
                 .placeholder(R.drawable.ic_placeholder_building)
                 .apply(RequestOptions.centerCropTransform())
                 .into(binding.listPhoto)

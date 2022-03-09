@@ -10,11 +10,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.models.Converters
 import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.models.Listing
+import com.openclassrooms.realestatemanager.models.PointOfInterest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-@Database(entities = [Listing::class, Photo::class], version = 1)
+@Database(entities = [Listing::class, Photo::class, PointOfInterest::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class ListingDatabase : RoomDatabase() {
     abstract fun listingDao(): ListingDao
@@ -65,6 +66,8 @@ abstract class ListingDatabase : RoomDatabase() {
                     1500000,
                     80,
                     4,
+                    2,
+                    1,
                     "Bel appartement de luxe",
                     "3 place du capitole, New York",
                     LatLng(48.845,2.367),
@@ -82,6 +85,8 @@ abstract class ListingDatabase : RoomDatabase() {
                     3000000,
                     150,
                     6,
+                    3,
+                    2,
                     "Magnifique maison",
                     "2 rue inconnue, New York",
                     LatLng(48.640,2.256),

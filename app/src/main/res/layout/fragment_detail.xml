@@ -9,129 +9,215 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/container_margin"
-            tools:context=".ui.MainActivity">
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            app:dividerDrawable="@drawable/divider"
+            app:flexWrap="wrap"
+            app:justifyContent="space_between"
+            app:showDivider="beginning|middle|end">
 
-            <TextView
-                android:id="@+id/title_media"
+            <LinearLayout
+                android:id="@+id/layout_media"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/media"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:orientation="vertical"
+                tools:context=".ui.MainActivity">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_media"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                tools:itemCount="1"
-                tools:listitem="@layout/item_photo" />
-
-            <TextView
-                android:id="@+id/title_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/description"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-            <TextView
-                android:id="@+id/detail_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:dividerDrawable="@drawable/divider"
-                app:flexWrap="wrap"
-                app:justifyContent="space_between"
-                app:showDivider="middle">
-
-                <LinearLayout
-                    android:layout_width="240dp"
+                <TextView
+                    android:id="@+id/title_media"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#F8BBD0"
-                    android:orientation="vertical"
-                    app:layout_flexGrow="1">
+                    android:layout_marginVertical="8dp"
+                    android:text="@string/media"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/surface" />
-
-                    <TextView
-                        android:id="@+id/detail_surface"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/number_of_rooms" />
-
-                    <TextView
-                        android:id="@+id/detail_rooms"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/number_of_bathrooms" />
-
-                    <TextView
-                        android:id="@+id/detail_bathrooms"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/number_of_bedrooms" />
-
-                    <TextView
-                        android:id="@+id/detail_bedrooms"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="240dp"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_media"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#B3E5FC"
-                    android:orientation="vertical"
-                    app:layout_flexGrow="1">
+                    android:orientation="horizontal"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_photo" />
+            </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/location" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_flexGrow="1">
 
-                    <TextView
-                        android:id="@+id/detail_address"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="240dp"
+                <TextView
+                    android:id="@+id/title_description"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FFECB3"
-                    android:orientation="vertical"
-                    app:layout_flexGrow="1">
+                    android:layout_marginVertical="8dp"
+                    android:text="@string/description"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_launcher_background"
-                        app:layout_flexGrow="1" />
-                </LinearLayout>
-            </com.google.android.flexbox.FlexboxLayout>
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/detail_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/container_margin" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_flexGrow="1">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:text="@string/characteristics"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:text="@string/price"
+                    app:drawableStartCompat="@drawable/ic_baseline_sell" />
+
+                <TextView
+                    android:id="@+id/detail_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:text="@string/area"
+                    app:drawableStartCompat="@drawable/ic_baseline_aspect_ratio" />
+
+                <TextView
+                    android:id="@+id/detail_surface"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:text="@string/number_of_rooms"
+                    app:drawableStartCompat="@drawable/ic_baseline_meeting_room" />
+
+                <TextView
+                    android:id="@+id/detail_rooms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:text="@string/number_of_bathrooms"
+                    app:drawableStartCompat="@drawable/ic_baseline_bathtub" />
+
+                <TextView
+                    android:id="@+id/detail_bathrooms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:text="@string/number_of_bedrooms"
+                    app:drawableStartCompat="@drawable/ic_baseline_hotel" />
+
+                <TextView
+                    android:id="@+id/detail_bedrooms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginBottom="8dp" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                app:layout_flexGrow="1">
+
+                <TextView
+                    android:id="@+id/title_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:text="@string/location"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/detail_address"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    app:drawableStartCompat="@drawable/ic_baseline_location"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/card_address"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title_location" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_address"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title_location">
+
+                    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/map_lite"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        map:cameraZoom="13"
+                        map:liteMode="true"
+                        map:mapType="normal" />
+                </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_pois"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_flexGrow="1">
+
+                <TextView
+                    android:id="@+id/title_pois"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:text="@string/points_of_interest"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipgroup_pois"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

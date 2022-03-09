@@ -30,6 +30,8 @@
         android:gravity="center_vertical"
         android:text="@string/choose_this_as_thumbnail"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:clickable="true"
+        android:focusable="true"
         app:drawableStartCompat="@drawable/ic_baseline_photo"
         app:drawableTint="?android:attr/textColorPrimary" />
 
@@ -41,6 +43,8 @@
         android:gravity="center_vertical"
         android:text="@string/delete_this_photo"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:clickable="true"
+        android:focusable="true"
         app:drawableStartCompat="@drawable/ic_baseline_delete"
         app:drawableTint="?android:attr/textColorPrimary" />
 </LinearLayout>

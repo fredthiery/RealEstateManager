@@ -6,10 +6,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="8dp"
+        android:visibility="gone"
+        app:singleLine="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_area"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/area" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_price"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/price" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_rooms"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/number_of_rooms" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_photos"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/number_of_photos" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_poi"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/points_of_interest" />
+    </com.google.android.material.chip.ChipGroup>
+
     <androidx.slidingpanelayout.widget.SlidingPaneLayout
         android:id="@+id/sliding_pane_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:background="#FAFAFA"
+        app:layout_constraintTop_toBottomOf="@id/chip_group"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="360dp"
@@ -19,10 +68,10 @@
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/left_pane"
                 android:name="androidx.navigation.fragment.NavHostFragment"
-                app:navGraph="@navigation/left_pane_navgraph"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                app:navGraph="@navigation/left_pane_navgraph" />
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottom_nav_view"
@@ -35,6 +84,7 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/right_pane"
             android:name="androidx.navigation.fragment.NavHostFragment"
+            android:background="@drawable/background_right_pane"
             android:layout_width="360dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
@@ -37,8 +39,8 @@ class ListFragment : Fragment() {
 
         val slidingPaneLayout = requireActivity().findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)
 
-        val adapter = ListingAdapter {
-            viewModel.listingId.value = it.id
+        val adapter = ListingAdapter(viewModel) { listing ->
+            viewModel.changeListing(listing.id)
             slidingPaneLayout.openPane()
         }
         binding.listingList.adapter = adapter
@@ -51,7 +53,14 @@ class ListFragment : Fragment() {
             ListOnBackPressedCallback(slidingPaneLayout)
         )
 
-        viewModel.listings.observe(viewLifecycleOwner, adapter::submitList)
+        viewModel.listings.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
+
+        // Add a divider between items
+        val dividerItemDecoration =
+            DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+        binding.listingList.addItemDecoration(dividerItemDecoration)
     }
 
     override fun onDestroyView() {

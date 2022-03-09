@@ -3,9 +3,6 @@
     <string name="title_activity_edit">EditActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
     <string name="title_activity_main">Real Estate Manager</string>
@@ -23,7 +20,6 @@
     <string name="sell_date">Sell date</string>
     <string name="number_of_rooms">Number of rooms</string>
     <string name="type_of_property">Type of real estate property</string>
-    <string name="surface">Surface</string>
     <string name="number_of_bathrooms">Number of bathrooms</string>
     <string name="number_of_bedrooms">Number of bedrooms</string>
     <string name="location">Location</string>
@@ -31,7 +27,19 @@
     <string name="media">Media</string>
     <string name="list_label">List</string>
     <string name="map_label">Map</string>
-    <string name="photo_title">Title</string>
+    <string name="photo_title">Title of the photo</string>
     <string name="choose_this_as_thumbnail">Choose this as thumbnail</string>
     <string name="delete_this_photo">Delete this photo</string>
+    <string name="points_of_interest">Points of interest</string>
+    <string name="m2">M²</string>
+
+    <string name="chip">%1$s: %2$s</string>
+    <string name="number_of_photos">Number of photos</string>
+    <string name="dollar">$</string>
+    <string name="rooms">rooms</string>
+    <string name="photos">photos</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="price_format">$ %1$s</string>
+    <string name="characteristics">Characteristics</string>
 </resources>

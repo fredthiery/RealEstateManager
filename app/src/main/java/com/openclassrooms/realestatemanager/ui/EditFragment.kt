@@ -12,21 +12,20 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
-import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.models.Listing
-import com.openclassrooms.realestatemanager.models.geoCodingResponse.Place
+import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 import java.io.File
-import java.text.Format
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,12 +33,19 @@ class EditFragment : Fragment() {
 
     private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!
-    private lateinit var listing: Listing
     private var latestTmpUri: Uri? = null
     private val args: EditFragmentArgs by navArgs()
 
     private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
+    }
+
+    private val adapter = PhotoAdapter() {
+        // When clicking on a photo in the recyclerView, show the bottom sheet
+        BottomSheetEditPhoto.newInstance(it).show(
+            childFragmentManager,
+            BottomSheetEditPhoto::class.java.canonicalName
+        )
     }
 
     private val takeImageResult =
@@ -56,38 +62,59 @@ class EditFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentEditBinding.inflate(inflater, container, false)
 
         // Recycler view for displaying photos
         binding.recyclerViewMedia.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        val adapter = PhotoAdapter {
-            listing.thumbnail = it.uri
-            ModalBottomSheetDialogFragment.newInstance(it).show(childFragmentManager,ModalBottomSheetDialogFragment::class.java.canonicalName)
-            // TODO listing devrait être dans le viewModel plutôt qu'ici
-        }
         binding.recyclerViewMedia.adapter = adapter
 
         // Edit an existing listing or create a new one
-        if (args.listingId != null) {
-            viewModel.getListing(args.listingId!!).observe(viewLifecycleOwner) {
-                // TODO viewModel should return an empty listing if Id doesn't exist
-                listing = it
-                bind()
-                viewModel.getPhotos(listing.id).observe(viewLifecycleOwner, adapter::submitList)
+        if (args.listingId == null)
+            viewModel.changeListing(UUID.randomUUID().toString())
+        else
+            viewModel.changeListing(args.listingId!!)
+
+        viewModel.currentListing.observe(viewLifecycleOwner) {
+            bind(it.listing)
+            adapter.submitList(it.photos)
+
+            binding.chipgroupPois.removeAllViews()
+            for (place in it.pois) {
+                val chip = Chip(context)
+                chip.text = String.format(
+                    resources.getString(R.string.chip),
+                    place.name,
+                    resources.getStringArray(R.array.poi_types)[place.type]
+                )
+                binding.chipgroupPois.addView(chip)
             }
-        } else {
-            listing = Listing(
-                id = UUID.randomUUID().toString(),
-                type = "",
-                price = 0,
-                address = "",
-                latLng = LatLng(0.0,0.0),
-                sellStatus = false,
-                onSaleDate = Calendar.getInstance()
-            )
-            viewModel.getPhotos(listing.id).observe(viewLifecycleOwner, adapter::submitList)
+        }
+
+        val arrayAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.item_autocomplete,
+            ArrayList<String>()
+        )
+        binding.texteditAddress.setAdapter(arrayAdapter)
+
+        // Populate the list of address suggestions
+        viewModel.suggestions.observe(viewLifecycleOwner) { suggestions ->
+
+            arrayAdapter.clear()
+            arrayAdapter.addAll(suggestions.map { it.formattedAddress })
+            arrayAdapter.filter.filter("")
+
+            if (suggestions.isNotEmpty()) {
+                if (viewModel.editListing.listing.address == suggestions[0].toString()) {
+                    // If the address matches the suggestion, set the latlng
+                    val loc = suggestions[0].toLatLng()
+                    viewModel.editListing.listing.latLng = loc
+                    viewModel.updatePOIs(loc)
+                    // TODO display an error message if the address doesn't match any suggestion
+                } else binding.texteditAddress.showDropDown()
+            }
         }
 
         return binding.root
@@ -97,30 +124,64 @@ class EditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Floating action button to save changes
-        binding.fabSave.setOnClickListener { viewModel.insert(listing) }
+        binding.fabSave.setOnClickListener {
+            viewModel.saveListing()
+            findNavController().navigate(R.id.action_save)
+        }
 
         // Floating action buttons to add photos
         binding.fabTakePicture.setOnClickListener { takeImage() }
         binding.fabAddPicture.setOnClickListener { selectImageFromGallery() }
 
         // Watch changes to textEdits
-        binding.texteditType.doAfterTextChanged { listing.type = it.toString() }
-        binding.texteditRooms.doAfterTextChanged { listing.numberOfRooms = it.toString().toInt() }
-        binding.texteditDescription.doAfterTextChanged { listing.description = it.toString() }
-        binding.texteditPrice.doAfterTextChanged { listing.price = it.toString().toInt() }
-        binding.texteditArea.doAfterTextChanged { listing.area = it.toString().toInt() }
-        binding.texteditRooms.doAfterTextChanged { listing.numberOfRooms = it.toString().toInt() }
-        binding.texteditAddress.doAfterTextChanged { validateAddress(it.toString()) }
+        binding.texteditType.doAfterTextChanged {
+            viewModel.editListing.listing.type = it.toString()
+        }
+
+        binding.texteditRooms.doAfterTextChanged {
+            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.numberOfRooms =
+                it.toString().toInt()
+        }
+        binding.texteditBedrooms.doAfterTextChanged {
+            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.numberOfBedrooms =
+                it.toString().toInt()
+        }
+        binding.texteditBathrooms.doAfterTextChanged {
+            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.numberOfBathrooms =
+                it.toString().toInt()
+        }
+
+        binding.texteditDescription.doAfterTextChanged {
+            viewModel.editListing.listing.description = it.toString()
+        }
+        binding.texteditPrice.doAfterTextChanged {
+            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.price =
+                it.toString().toInt()
+        }
+        binding.texteditArea.doAfterTextChanged {
+            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.area =
+                it.toString().toInt()
+        }
+        binding.texteditRooms.doAfterTextChanged {
+            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.numberOfRooms =
+                it.toString().toInt()
+        }
+        binding.texteditAddress.doAfterTextChanged {
+            viewModel.updateSuggestions(it.toString())
+            viewModel.editListing.listing.address = it.toString()
+        }
 
         // Click on a date
         binding.texteditOnSaleDate.setOnClickListener { buttonSelectDate() }
     }
 
-    private fun bind() {
+    private fun bind(listing: Listing) {
         binding.texteditType.setText(listing.type)
         binding.texteditDescription.setText(listing.description)
         binding.texteditAddress.setText(listing.address)
         binding.texteditRooms.setText(listing.numberOfRooms.toString())
+        binding.texteditBedrooms.setText(listing.numberOfBedrooms.toString())
+        binding.texteditBathrooms.setText(listing.numberOfBathrooms.toString())
         binding.texteditArea.setText(listing.area.toString())
         binding.texteditPrice.setText(listing.price.toString())
         binding.texteditOnSaleDate.setText(
@@ -136,30 +197,6 @@ class EditFragment : Fragment() {
         _binding = null
     }
 
-    private fun validateAddress(address: String) {
-        listing.address = address
-        if (address.length > 10) {
-            viewModel.getLocation(address).observe(viewLifecycleOwner) { locations ->
-                // Populate the AutoComplete dropdown
-                val locationStrings = ArrayList<String>()
-                for (location in locations) { locationStrings.add(location.formattedAddress) }
-                val arrayAdapter =
-                    ArrayAdapter(requireContext(), R.layout.item_autocomplete, locationStrings)
-                binding.texteditAddress.setAdapter(arrayAdapter)
-
-                if (locations.isNotEmpty() && address != locationStrings[0]) {
-                    // Display the dropdown when at least 1 matching address has been found
-                    binding.texteditAddress.showDropDown()
-                } else if (locations.isNotEmpty() && address == locationStrings[0]) {
-                    // If the address matches the suggestion, set the latlng
-                    val loc = locations[0].geometry.location
-                    listing.latLng = LatLng(loc.lat, loc.lng)
-                    // TODO display an error message if the address doesn't match any suggestion
-                }
-            }
-        }
-    }
-
     private fun buttonSelectDate() {
         val cal = Calendar.getInstance()
         val builder = MaterialDatePicker.Builder.datePicker()
@@ -167,7 +204,7 @@ class EditFragment : Fragment() {
         val datePicker = builder.build()
         datePicker.addOnPositiveButtonClickListener {
             cal.timeInMillis = it
-            listing.onSaleDate = cal
+            viewModel.editListing.listing.onSaleDate = cal
             binding.texteditOnSaleDate.setText(
                 SimpleDateFormat(
                     "dd/MM/yyyy",
@@ -201,11 +238,10 @@ class EditFragment : Fragment() {
 
     private fun insertPhoto(uri: Uri) {
         val newPhoto = Photo(
-            id = UUID.randomUUID().toString(),
             title = "",
             uri = uri,
-            listingId = listing.id
+            listingId = viewModel.editListing.listing.id
         )
-        viewModel.insert(newPhoto)
+        viewModel.add(newPhoto)
     }
 }

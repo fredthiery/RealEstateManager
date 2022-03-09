@@ -10,4 +10,36 @@
     <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
     <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
     <string name="media">Media</string>
+    <string name="title_activity_edit">Activité Édition</string>
+    <string name="action_settings">Préférences</string>
+    <string name="description">Description</string>
+    <string name="address">Adresse</string>
+    <string name="listing_photo">Photo de l\'annonce</string>
+    <string name="price">Prix</string>
+    <string name="area">Surface</string>
+    <string name="on_sale_date">Date de mise en vente</string>
+    <string name="sell_date">Date de vente</string>
+    <string name="number_of_rooms">Nombre de pièces</string>
+    <string name="type_of_property">Type de propriété</string>
+    <string name="number_of_bathrooms">Nombre de salles de bain</string>
+    <string name="number_of_bedrooms">Nombre de chambres</string>
+    <string name="location">Emplacement</string>
+    <string name="edit_label">Édition</string>
+    <string name="list_label">Liste</string>
+    <string name="map_label">Carte</string>
+    <string name="photo_title">Titre de la photo</string>
+    <string name="choose_this_as_thumbnail">Choisir comme aperçu</string>
+    <string name="delete_this_photo">Supprimer cette photo</string>
+    <string name="points_of_interest">Points d\'intérêt</string>
+    <string name="m2">M²</string>
+
+    <string name="chip">%1$s: %2$s</string>
+    <string name="number_of_photos">Nombre de photos</string>
+    <string name="dollar">$</string>
+    <string name="rooms">pièces</string>
+    <string name="photos">photos</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="price_format">%1$s $</string>
+    <string name="characteristics">Caractéristiques</string>
 </resources>

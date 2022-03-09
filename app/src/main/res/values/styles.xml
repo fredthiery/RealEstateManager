@@ -11,10 +11,11 @@
         <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <item name="android:colorBackground">@color/primaryTextColor</item>
-        <item name="android:textColorSecondary">@color/secondaryTextColor</item>
 
         <!-- Status bar is the same color as the toolbar -->
         <item name="android:statusBarColor">@color/primaryColor</item>
+
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -37,6 +38,20 @@
         <item name="hintTextColor">@color/primaryDarkColor</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="boxStrokeColor">@color/secondaryColor</item>
+    </style>
+
+    <style name="BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="backgroundTint">@android:color/background_light</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
     </style>
 
 </resources>

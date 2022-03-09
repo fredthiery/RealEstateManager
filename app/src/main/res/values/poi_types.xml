@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="poi_types">
+        <item>Airport</item>
+        <item>Amusement Park</item>
+        <item>Bank</item>
+        <item>Church</item>
+        <item>Doctor</item>
+        <item>Fire Station</item>
+        <item>Gas Station</item>
+        <item>Gym</item>
+        <item>Hospital</item>
+        <item>Library</item>
+        <item>Museum</item>
+        <item>Park</item>
+        <item>Police</item>
+        <item>Post Office</item>
+        <item>Restaurant</item>
+        <item>School</item>
+        <item>Shopping Mall</item>
+        <item>Stadium</item>
+        <item>Store</item>
+        <item>Zoo</item>
+    </string-array>
+</resources>
