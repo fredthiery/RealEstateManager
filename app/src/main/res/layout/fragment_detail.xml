@@ -20,6 +20,12 @@
             app:justifyContent="space_between"
             app:showDivider="beginning|middle|end">
 
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
             <LinearLayout
                 android:id="@+id/layout_media"
                 android:layout_width="match_parent"
@@ -208,9 +214,9 @@
                     android:id="@+id/detail_address"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_marginEnd="@dimen/container_margin"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/container_margin"
                     app:drawableStartCompat="@drawable/ic_baseline_location"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/card_address"

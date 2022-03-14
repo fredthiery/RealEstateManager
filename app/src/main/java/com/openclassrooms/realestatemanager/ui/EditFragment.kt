@@ -1,13 +1,10 @@
 package com.openclassrooms.realestatemanager.ui
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.FileProvider
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,17 +15,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.models.Listing
-import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.models.PointOfInterest
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 import kotlinx.coroutines.launch
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -164,20 +158,11 @@ class EditFragment : Fragment() {
             }
         } else binding.texteditAddress.setText(listing.address)
 
-        if (listing.numberOfRooms != null)
-        binding.texteditRooms.setText(listing.numberOfRooms.toString())
-
-        if (listing.numberOfBedrooms != null)
-        binding.texteditBedrooms.setText(listing.numberOfBedrooms.toString())
-
-        if (listing.numberOfBathrooms != null)
-        binding.texteditBathrooms.setText(listing.numberOfBathrooms.toString())
-
-        if (listing.area != null)
-        binding.texteditArea.setText(listing.area.toString())
-
-        if (listing.price != null)
-        binding.texteditPrice.setText(listing.price.toString())
+        binding.texteditRooms.setText(if (listing.numberOfRooms != null) listing.numberOfRooms.toString() else "")
+        binding.texteditBedrooms.setText(if (listing.numberOfBedrooms != null) listing.numberOfBedrooms.toString() else "")
+        binding.texteditBathrooms.setText(if (listing.numberOfBathrooms != null) listing.numberOfBathrooms.toString() else "")
+        binding.texteditArea.setText(if (listing.area != null) listing.area.toString() else "")
+        binding.texteditPrice.setText(if (listing.price != null) listing.price.toString() else "")
 
         binding.texteditOnSaleDate.setText(
             SimpleDateFormat(

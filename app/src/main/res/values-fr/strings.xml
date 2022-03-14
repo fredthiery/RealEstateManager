@@ -47,4 +47,5 @@
     <string name="add_a_photo">Ajouter une photo</string>
     <string name="add_photo_from_galery">Depuis la galerie</string>
     <string name="add_photo_from_camera">Depuis l\'appareil photo</string>
+    <string name="listing_title">%1$s à %2$s</string>
 </resources>

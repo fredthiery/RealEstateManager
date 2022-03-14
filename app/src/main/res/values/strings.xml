@@ -47,4 +47,5 @@
     <string name="add_a_photo">Add a photo</string>
     <string name="add_photo_from_galery">From the galery</string>
     <string name="add_photo_from_camera">From the camera</string>
+    <string name="listing_title">%1$s in %2$s</string>
 </resources>

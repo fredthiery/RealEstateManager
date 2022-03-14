@@ -24,6 +24,7 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
     val currentListing = MutableLiveData<Listing>()
     val currentPhotos = MutableLiveData<List<Photo>>()
     val currentPOIs = MutableLiveData<List<PointOfInterest>>()
+    val suggestions = MutableLiveData<List<Place>>()
 
     init {
         selectedItem = 0
@@ -79,36 +80,29 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
     }
 
     fun updateAddress(address: String): Boolean {
-        return if (address.equals(editListing.listing.address, true) || address == "") {
+        return if (address == "" || address.equals(editListing.listing.address, true)) {
+            // Address is empty or unchanged
             editListing.listing.address = address
             false
         } else {
+            // Address has changed
             editListing.listing.address = address
             viewModelScope.launch {
+                // Get address suggestions
                 val places = repository.getLocation(address)
-                if (places.isNotEmpty()) {
-                    editListing.listing.latLng
+                suggestions.value = places
+                if (places.size == 1 && address.equals(places[0].toString(),true)) {
+                    // There's only one suggestion and address is it
+                    editListing.listing.latLng = places[0].toLatLng()
                     updatePOIs(places[0].toLatLng())
                 }
             }
-            updateSuggestions(address)
             true
         }
     }
 
     suspend fun findAddress(latLng: LatLng): String {
         return repository.getLocation(latLng)[0].formattedAddress
-    }
-
-    val suggestions = MutableLiveData<List<Place>>()
-    private fun updateSuggestions(address: String) {
-        if (address.length > 8) {
-            viewModelScope.launch {
-                suggestions.value = repository.getLocation(address)
-            }
-        } else {
-            suggestions.value = ArrayList()
-        }
     }
 
     private val typeFilter = listOf(

@@ -28,7 +28,7 @@ class DetailFragment : Fragment() {
     private val binding get() = _binding!!
     private val nFormat: NumberFormat = NumberFormat.getInstance()
 
-    private val viewModel: MainViewModel by activityViewModels() {
+    private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
     }
 
@@ -48,7 +48,7 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = PhotoAdapter() {}
+        val adapter = PhotoAdapter {}
         binding.recyclerViewMedia.adapter = adapter
 
         // Observe Listing
@@ -77,25 +77,38 @@ class DetailFragment : Fragment() {
     }
 
     private fun bind(listing: Listing) {
+        binding.title.text = String.format(
+            resources.getString(R.string.listing_title),
+            listing.type,
+            listing.neighborhood
+        )
+
         binding.detailDescription.text = listing.description
 
-        binding.detailPrice.text = String.format(
-            resources.getString(R.string.price_format),
-            nFormat.format(listing.price)
-        )
+        listing.price?.let {
+            binding.detailPrice.text = String.format(
+                resources.getString(R.string.price_format),
+                nFormat.format(it)
+            )
+        }
 
         binding.detailAddress.text = listing.address.replace(", ", "\n")
         binding.detailRooms.text = listing.numberOfRooms.toString()
         binding.detailBedrooms.text = listing.numberOfBedrooms.toString()
         binding.detailBathrooms.text = listing.numberOfBathrooms.toString()
-        binding.detailArea.text = String.format(resources.getString(R.string.area_format),listing.area.toString())
+        binding.detailArea.text =
+            String.format(resources.getString(R.string.area_format), listing.area.toString())
 
         binding.layoutPrice.visibility = if (listing.price != null) View.VISIBLE else View.GONE
         binding.layoutArea.visibility = if (listing.area != null) View.VISIBLE else View.GONE
-        binding.layoutRooms.visibility = if (listing.numberOfRooms != null) View.VISIBLE else View.GONE
-        binding.layoutBedrooms.visibility = if (listing.numberOfBedrooms != null) View.VISIBLE else View.GONE
-        binding.layoutBathrooms.visibility = if (listing.numberOfBathrooms != null) View.VISIBLE else View.GONE
+        binding.layoutRooms.visibility =
+            if (listing.numberOfRooms != null) View.VISIBLE else View.GONE
+        binding.layoutBedrooms.visibility =
+            if (listing.numberOfBedrooms != null) View.VISIBLE else View.GONE
+        binding.layoutBathrooms.visibility =
+            if (listing.numberOfBathrooms != null) View.VISIBLE else View.GONE
     }
+
 
     private fun bind(pois: List<PointOfInterest>) {
         binding.layoutPois.visibility = if (pois.isNotEmpty()) View.VISIBLE else View.GONE
