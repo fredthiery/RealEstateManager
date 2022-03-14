@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="property_types" >
+        <item>Maison</item>
+        <item>Appartement</item>
+    </string-array>
     <string-array name="poi_types">
         <item>Aéroport</item>
         <item>Parc d\'attraction</item>

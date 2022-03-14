@@ -39,10 +39,7 @@ class ListFragment : Fragment() {
 
         val slidingPaneLayout = requireActivity().findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)
 
-        val adapter = ListingAdapter(viewModel) { listing ->
-            viewModel.changeListing(listing.id)
-            slidingPaneLayout.openPane()
-        }
+        val adapter = ListingAdapter(viewModel,slidingPaneLayout)
         binding.listingList.adapter = adapter
 
         slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED

@@ -12,6 +12,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -56,6 +58,26 @@ class MapsFragment : Fragment() {
         googleMap.setOnCameraIdleListener(clusterManager)
         googleMap.setOnMarkerClickListener(clusterManager)
 
+        // Cluster click
+        clusterManager.setOnClusterClickListener { cluster ->
+            centerCameraAround(cluster.items)
+            true
+        }
+
+        // Marker click
+        clusterManager.setOnClusterItemClickListener { listing ->
+            viewModel.loadListing(listing.id)
+            true
+        }
+
+        // Map click
+        googleMap.setOnMapLongClickListener {
+            activity?.findNavController(R.id.right_pane)?.navigate(R.id.edit_dest)
+            viewModel.editListing(Listing(latLng = it))
+            val slidingPaneLayout = requireActivity().findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)
+            slidingPaneLayout.openPane()
+        }
+
         enableMyLocation()
         viewModel.listings.observe(viewLifecycleOwner) { listings ->
             updateMarkers(listings)
@@ -63,7 +85,7 @@ class MapsFragment : Fragment() {
         }
     }
 
-    private fun centerCameraAround(listings: List<Listing>) {
+    private fun centerCameraAround(listings: Collection<Listing>) {
         if (listings.isNotEmpty()) {
             val builder = LatLngBounds.builder()
             for (listing in listings) {

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.openclassrooms.realestatemanager.R
@@ -15,25 +16,37 @@ import java.text.NumberFormat
 
 class ListingAdapter(
     private val viewModel: MainViewModel,
-    private val onItemClicked: (Listing) -> Unit
+    private val slidingPaneLayout: SlidingPaneLayout
 ) :
     ListAdapter<Listing, ListingAdapter.ViewHolder>(ListingDiffCallback) {
+
     private val nFormat: NumberFormat = NumberFormat.getInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemListingListBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+
+        return ViewHolder(
+            ItemListingListBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
         )
-        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val current = getItem(position)
+        val view = holder.itemView
 
-        holder.itemView.setOnClickListener {
-            onItemClicked(current)
+        // Is this the selected item ?
+        view.isSelected = ( viewModel.selectedItem == position ) && !slidingPaneLayout.isSlideable
+
+        view.setOnClickListener {
+            // Reset selected item
+            notifyItemChanged(viewModel.selectedItem)
+            viewModel.selectedItem = holder.bindingAdapterPosition
+            // Highlight newly selected item
+            notifyItemChanged(position)
+            slidingPaneLayout.openPane()
         }
         holder.bind(current)
     }
@@ -42,12 +55,9 @@ class ListingAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Listing) {
-            if (viewModel.currentListing.value?.listing?.id == item.id) {
-                itemView.setBackgroundColor(itemView.resources.getColor(R.color.primaryColor))
-            }
 
             binding.listTitle.text = item.type
-            binding.listNeighborhood.text = item.address
+            binding.listNeighborhood.text = item.neighborhood
             binding.listPrice.text = String.format(
                 itemView.resources.getString(R.string.price_format),
                 nFormat.format(item.price)

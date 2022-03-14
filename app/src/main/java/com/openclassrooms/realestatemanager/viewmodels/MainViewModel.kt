@@ -10,10 +10,24 @@ import kotlinx.coroutines.launch
 class MainViewModel(private val repository: ListingRepository) : ViewModel() {
 
     var searchCriteria = SearchCriteria()
-    private var _listings: MutableLiveData<List<Listing>> =
+    private val _listings: MutableLiveData<List<Listing>> =
         repository.listings.asLiveData() as MutableLiveData<List<Listing>>
     val listings: LiveData<List<Listing>>
         get() = _listings
+
+    var editListing = ListingWithPhotos()
+    var selectedItem = 0
+        set(n) {
+            viewModelScope.launch { repository.listings.collect { loadListing(it[n].id) } }
+            field = n
+        }
+    val currentListing = MutableLiveData<Listing>()
+    val currentPhotos = MutableLiveData<List<Photo>>()
+    val currentPOIs = MutableLiveData<List<PointOfInterest>>()
+
+    init {
+        selectedItem = 0
+    }
 
     fun setSearchCriteria(term: String? = null) {
         if (term != null) searchCriteria.term = term
@@ -21,66 +35,73 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
     }
 
     fun performSearch() = viewModelScope.launch {
-        repository.searchListings(
-            searchCriteria.term,
-            searchCriteria.area,
-            searchCriteria.price,
-            searchCriteria.rooms
-        ).collect { result ->
+        repository.searchListings(searchCriteria).collect { result ->
             _listings.value = result
         }
     }
 
-    var editListing = ListingWithPhotos()
-    val currentListing = MutableLiveData<ListingWithPhotos>()
-
-    fun changeListing(id: String) = viewModelScope.launch {
+    fun loadListing(id: String) = viewModelScope.launch {
         repository.getListing(id).collect { result ->
-
-            // TODO utiliser une map avec comme index les id des listings
-            val tmpListings = _listings.value!!.toMutableList()
-            val prevSelected = tmpListings.indexOf(tmpListings.find{it.selected})
-            if (prevSelected != -1) {
-                val prevListing = tmpListings[prevSelected]
-                prevListing.selected = false
-                tmpListings[prevSelected] = prevListing.copy()
-            }
-
-            val newSelected = tmpListings.indexOf(tmpListings.find { it.id == result.listing.id })
-            val newListing = tmpListings[newSelected]
-            newListing.selected = true
-            tmpListings[newSelected] = newListing.copy()
-
-            _listings.value = tmpListings.toList()
-
-            currentListing.value = result
+            currentListing.value = result.listing
+            currentPhotos.value = result.photos
+            currentPOIs.value = result.pois
             editListing = result.copy()
         }
     }
 
+    fun editListing(listing: Listing) {
+        currentListing.value = listing
+        currentPhotos.value = ArrayList()
+        currentPOIs.value = ArrayList()
+        editListing = ListingWithPhotos(listing)
+    }
+
     fun add(photo: Photo) {
         editListing.photos.add(photo)
-        currentListing.value = editListing.copy()
+        if (editListing.photos.size == 1) editListing.listing.thumbnailId = photo.id
+        currentPhotos.value = editListing.photos
     }
 
     fun update(photo: Photo) {
-        val i = editListing.photos.indexOfFirst{ it.id == photo.id}
+        val i = editListing.photos.indexOfFirst { it.id == photo.id }
         editListing.photos[i] = photo.copy()
         editListing.photos = editListing.photos.toMutableList()
-        currentListing.value = editListing.copy()
+        currentPhotos.value = editListing.photos
     }
 
     fun delete(photo: Photo) = viewModelScope.launch {
         editListing.photos.remove(photo)
-        currentListing.value = editListing.copy()
+        currentPhotos.value = editListing.photos
     }
 
     fun saveListing() = viewModelScope.launch {
         repository.insert(editListing)
     }
 
+    fun updateAddress(address: String): Boolean {
+        return if (address.equals(editListing.listing.address, true) || address == "") {
+            editListing.listing.address = address
+            false
+        } else {
+            editListing.listing.address = address
+            viewModelScope.launch {
+                val places = repository.getLocation(address)
+                if (places.isNotEmpty()) {
+                    editListing.listing.latLng
+                    updatePOIs(places[0].toLatLng())
+                }
+            }
+            updateSuggestions(address)
+            true
+        }
+    }
+
+    suspend fun findAddress(latLng: LatLng): String {
+        return repository.getLocation(latLng)[0].formattedAddress
+    }
+
     val suggestions = MutableLiveData<List<Place>>()
-    fun updateSuggestions(address: String) {
+    private fun updateSuggestions(address: String) {
         if (address.length > 8) {
             viewModelScope.launch {
                 suggestions.value = repository.getLocation(address)
@@ -112,24 +133,23 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
         "store",
         "zoo"
     )
-    fun updatePOIs(latLng: LatLng) {
-        viewModelScope.launch {
-            val response = repository.getNearbyPOIs(latLng)
-            editListing.pois.clear()
-            for (place in response) {
-                val type = place.types.find { typeFilter.contains(it) }
-                val typeId = typeFilter.indexOf(type)
-                if (type != null) editListing.pois.add(
-                    PointOfInterest(
-                        name = place.name,
-                        type = typeId,
-                        latLng = place.toLatLng(),
-                        listingId = editListing.listing.id
-                    )
+
+    private fun updatePOIs(latLng: LatLng) = viewModelScope.launch {
+        val response = repository.getNearbyPOIs(latLng)
+        editListing.pois.clear()
+        for (place in response) {
+            val type = place.types.find { typeFilter.contains(it) }
+            val typeId = typeFilter.indexOf(type)
+            if (type != null) editListing.pois.add(
+                PointOfInterest(
+                    name = place.name,
+                    type = typeId,
+                    latLng = place.toLatLng(),
+                    listingId = editListing.listing.id
                 )
-            }
-            currentListing.value = editListing.copy()
+            )
         }
+        currentPOIs.value = editListing.pois
     }
 }
 

@@ -9,174 +9,288 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/container_margin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            app:dividerDrawable="@drawable/divider"
+            app:flexWrap="wrap"
+            app:justifyContent="space_between"
+            app:showDivider="beginning|middle|end">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_type"
-                style="@style/AppTheme.TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textedit_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/type_of_property" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_media"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                tools:itemCount="1"
-                tools:listitem="@layout/item_photo" />
+                android:orientation="vertical"
+                app:layout_flexGrow="1">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_description"
-                style="@style/AppTheme.TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_type"
+                    style="@style/AppTheme.TextInputLayout.ExposedDropDownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textedit_description"
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/textedit_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/type_of_property"
+                        android:padding="16dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_neighborhood"
+                    style="@style/AppTheme.TextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textedit_neighborhood"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/neighborhood" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_price"
+                    style="@style/AppTheme.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/description"
-                    android:lines="8" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    app:prefixText="$">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_address"
-                style="@style/AppTheme.TextInputLayout.ExposedDropDownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textedit_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/price"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <AutoCompleteTextView
-                    android:id="@+id/textedit_address"
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/address"
-                    android:inputType="textMultiLine"
-                    android:padding="12dp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_price"
-                style="@style/AppTheme.TextInputLayout"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/add_photo"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_margin="4dp"
+                            android:checkable="true">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@color/secondaryColor">
+
+                                <ImageView
+                                    android:id="@+id/image"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerInside"
+                                    android:src="@drawable/ic_baseline_add_a_photo_big"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="?attr/scrimBackground"
+                                    android:gravity="center_vertical"
+                                    android:padding="@dimen/text_margin"
+                                    android:text="@string/add_a_photo"
+                                    android:textColor="@color/primaryTextColor"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycler_view_media"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            tools:itemCount="1"
+                            tools:listitem="@layout/item_photo" />
+                    </LinearLayout>
+                </ScrollView>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_description"
+                    style="@style/AppTheme.TextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textedit_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/description"
+                        android:lines="8" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:prefixText="$">
+                app:layout_flexGrow="1">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textedit_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/price"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_address"
+                    style="@style/AppTheme.TextInputLayout.ExposedDropDownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="@dimen/container_margin"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/card_address"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_area"
-                style="@style/AppTheme.TextInputLayout"
-                android:layout_width="match_parent"
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/textedit_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/address"
+                        android:inputType="textMultiLine"
+                        android:padding="16dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_address"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/map_lite"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        map:cameraZoom="13"
+                        map:liteMode="true"
+                        map:mapType="normal" />
+                </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="240dp"
                 android:layout_height="wrap_content"
-                app:suffixText="M²">
+                android:orientation="vertical"
+                app:layout_flexGrow="1">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textedit_area"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_area"
+                    style="@style/AppTheme.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/area"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    app:suffixText="M²">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_rooms"
-                style="@style/AppTheme.TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textedit_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/area"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textedit_rooms"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_rooms"
+                    style="@style/AppTheme.TextInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/number_of_rooms"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_bedrooms"
-                style="@style/AppTheme.TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textedit_rooms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/number_of_rooms"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textedit_bedrooms"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_bedrooms"
+                    style="@style/AppTheme.TextInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/number_of_bedrooms"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_bathrooms"
-                style="@style/AppTheme.TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textedit_bedrooms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/number_of_bedrooms"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textedit_bathrooms"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_bathrooms"
+                    style="@style/AppTheme.TextInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/number_of_bathrooms"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_on_sale_date"
-                style="@style/AppTheme.TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textedit_bathrooms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/number_of_bathrooms"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textedit_on_sale_date"
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_flexGrow="1">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_on_sale_date"
+                    style="@style/AppTheme.TextInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:hint="@string/on_sale_date"
-                    android:inputType="date" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_sell_date"
-                style="@style/AppTheme.TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textedit_on_sale_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:hint="@string/on_sale_date"
+                        android:inputType="date" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textedit_sell_date"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_sell_date"
+                    style="@style/AppTheme.TextInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:hint="@string/sell_date"
-                    android:inputType="date" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textedit_sell_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:hint="@string/sell_date"
+                        android:inputType="date" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipgroup_pois"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                app:layout_flexGrow="1" />
+        </com.google.android.flexbox.FlexboxLayout>
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -188,21 +302,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_save" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_take_picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_constraintBottom_toTopOf="@id/fab_save"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_add_a_photo" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_constraintBottom_toTopOf="@id/fab_take_picture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_add_photo_alternat" />
 </androidx.constraintlayout.widget.ConstraintLayout>

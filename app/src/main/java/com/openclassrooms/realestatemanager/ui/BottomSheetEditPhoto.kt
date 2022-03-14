@@ -49,7 +49,6 @@ class BottomSheetEditPhoto(var photo: Photo) : BottomSheetDialogFragment() {
 
         binding.actionDelete.setOnClickListener {
             viewModel.delete(photo)
-            // TODO should not directly delete it but rather mark it to delete later (when saving changes)
         }
     }
 }

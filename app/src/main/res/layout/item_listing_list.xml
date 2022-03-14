@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/list_background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -10,35 +11,44 @@
         android:layout_height="120dp"
         android:contentDescription="@string/listing_photo"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/list_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/type_of_property"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/list_photo"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/list_neighborhood"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="@string/neighborhood"
         android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintTop_toBottomOf="@id/list_title"
+        app:layout_constraintBottom_toTopOf="@id/list_price"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/list_photo"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/list_title" />
 
     <TextView
         android:id="@+id/list_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintTop_toBottomOf="@id/list_neighborhood"
-        app:layout_constraintStart_toEndOf="@id/list_photo"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:text="$1,350,000"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/list_price"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list_photo"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

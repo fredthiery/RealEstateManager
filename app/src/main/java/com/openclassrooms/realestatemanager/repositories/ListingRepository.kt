@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.repositories
 
-import androidx.annotation.WorkerThread
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.database.ListingDao
 import com.openclassrooms.realestatemanager.models.*
@@ -14,17 +13,12 @@ class ListingRepository(private val listingDao: ListingDao) {
 
     val listings: Flow<List<Listing>> = listingDao.getAll().onEach { getThumbnail(it) }
 
-    fun searchListings(
-        search: String,
-        area: MinMax,
-        price: MinMax,
-        rooms: MinMax
-    ): Flow<List<Listing>> {
+    fun searchListings(criteria: SearchCriteria): Flow<List<Listing>> {
         return listingDao.searchListings(
-            "%$search%",
-            area.min, area.max,
-            price.min, price.max,
-            rooms.min, rooms.max
+            "%" + criteria.term + "%",
+            criteria.area.min, criteria.area.max,
+            criteria.price.min, criteria.price.max,
+            criteria.rooms.min, criteria.rooms.max
         ).onEach { getThumbnail(it) }
     }
 

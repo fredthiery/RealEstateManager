@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -23,8 +24,7 @@
                 android:id="@+id/layout_media"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                tools:context=".ui.MainActivity">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/title_media"
@@ -77,75 +77,114 @@
                     android:text="@string/characteristics"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="8dp"
-                    android:text="@string/price"
-                    app:drawableStartCompat="@drawable/ic_baseline_sell" />
+                <LinearLayout
+                    android:id="@+id/layout_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/detail_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="48dp"
-                    android:layout_marginBottom="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:text="@string/price"
+                        app:drawableStartCompat="@drawable/ic_baseline_sell" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="8dp"
-                    android:text="@string/area"
-                    app:drawableStartCompat="@drawable/ic_baseline_aspect_ratio" />
+                    <TextView
+                        android:id="@+id/detail_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="48dp"
+                        android:layout_marginBottom="8dp" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/detail_surface"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="48dp"
-                    android:layout_marginBottom="8dp" />
+                <LinearLayout
+                    android:id="@+id/layout_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="8dp"
-                    android:text="@string/number_of_rooms"
-                    app:drawableStartCompat="@drawable/ic_baseline_meeting_room" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:text="@string/area"
+                        app:drawableStartCompat="@drawable/ic_baseline_aspect_ratio" />
 
-                <TextView
-                    android:id="@+id/detail_rooms"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="48dp"
-                    android:layout_marginBottom="8dp" />
+                    <TextView
+                        android:id="@+id/detail_area"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="48dp"
+                        android:layout_marginBottom="8dp"
+                        app:suffixText="M²" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="8dp"
-                    android:text="@string/number_of_bathrooms"
-                    app:drawableStartCompat="@drawable/ic_baseline_bathtub" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/detail_bathrooms"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="48dp"
-                    android:layout_marginBottom="8dp" />
+                <LinearLayout
+                    android:id="@+id/layout_rooms"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="8dp"
-                    android:text="@string/number_of_bedrooms"
-                    app:drawableStartCompat="@drawable/ic_baseline_hotel" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:text="@string/number_of_rooms"
+                        app:drawableStartCompat="@drawable/ic_baseline_meeting_room" />
 
-                <TextView
-                    android:id="@+id/detail_bedrooms"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="48dp"
-                    android:layout_marginBottom="8dp" />
+                    <TextView
+                        android:id="@+id/detail_rooms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="48dp"
+                        android:layout_marginBottom="8dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_bedrooms"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:text="@string/number_of_bedrooms"
+                        app:drawableStartCompat="@drawable/ic_baseline_hotel" />
+
+                    <TextView
+                        android:id="@+id/detail_bedrooms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="48dp"
+                        android:layout_marginBottom="8dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_bathrooms"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:text="@string/number_of_bathrooms"
+                        app:drawableStartCompat="@drawable/ic_baseline_bathtub" />
+
+                    <TextView
+                        android:id="@+id/detail_bathrooms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="48dp"
+                        android:layout_marginBottom="8dp" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -171,6 +210,7 @@
                     android:layout_height="0dp"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/container_margin"
                     app:drawableStartCompat="@drawable/ic_baseline_location"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/card_address"

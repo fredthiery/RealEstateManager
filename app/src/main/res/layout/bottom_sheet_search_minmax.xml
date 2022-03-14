@@ -2,14 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/container_margin">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/container_margin"
+        android:paddingBottom="@dimen/container_margin"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:text="@string/photo_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -18,7 +20,7 @@
         style="@style/AppTheme.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/container_margin"
+        android:layout_marginEnd="@dimen/container_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/layout_max"
         app:layout_constraintTop_toBottomOf="@+id/title">
@@ -37,7 +39,6 @@
         style="@style/AppTheme.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/container_margin"
         app:layout_constraintStart_toEndOf="@+id/layout_min"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title">

@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.openclassrooms.realestatemanager.BuildConfig
@@ -23,8 +24,10 @@ import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.models.Listing
 import com.openclassrooms.realestatemanager.models.Photo
+import com.openclassrooms.realestatemanager.models.PointOfInterest
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,7 +36,6 @@ class EditFragment : Fragment() {
 
     private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!
-    private var latestTmpUri: Uri? = null
     private val args: EditFragmentArgs by navArgs()
 
     private val viewModel: MainViewModel by activityViewModels {
@@ -47,16 +49,6 @@ class EditFragment : Fragment() {
             BottomSheetEditPhoto::class.java.canonicalName
         )
     }
-
-    private val takeImageResult =
-        registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
-            if (isSuccess) latestTmpUri?.let(this::insertPhoto)
-        }
-
-    private val selectImageFromGalleryResult =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let(this::insertPhoto)
-        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,49 +64,40 @@ class EditFragment : Fragment() {
 
         // Edit an existing listing or create a new one
         if (args.listingId == null)
-            viewModel.changeListing(UUID.randomUUID().toString())
+            viewModel.loadListing(UUID.randomUUID().toString())
         else
-            viewModel.changeListing(args.listingId!!)
+            viewModel.loadListing(args.listingId!!)
 
-        viewModel.currentListing.observe(viewLifecycleOwner) {
-            bind(it.listing)
-            adapter.submitList(it.photos)
+        // Observe the models
+        viewModel.currentListing.observe(viewLifecycleOwner, this::bind)
+        viewModel.currentPhotos.observe(viewLifecycleOwner, adapter::submitList)
+        viewModel.currentPOIs.observe(viewLifecycleOwner, this::updatePOIs)
 
-            binding.chipgroupPois.removeAllViews()
-            for (place in it.pois) {
-                val chip = Chip(context)
-                chip.text = String.format(
-                    resources.getString(R.string.chip),
-                    place.name,
-                    resources.getStringArray(R.array.poi_types)[place.type]
-                )
-                binding.chipgroupPois.addView(chip)
-            }
-        }
+        // Populate property type suggestions
+        binding.texteditType.setAdapter(
+            ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.property_types,
+                R.layout.item_autocomplete
+            )
+        )
 
+        // Populate address suggestions
         val arrayAdapter = ArrayAdapter(
             requireContext(),
             R.layout.item_autocomplete,
             ArrayList<String>()
         )
         binding.texteditAddress.setAdapter(arrayAdapter)
-
-        // Populate the list of address suggestions
         viewModel.suggestions.observe(viewLifecycleOwner) { suggestions ->
-
             arrayAdapter.clear()
             arrayAdapter.addAll(suggestions.map { it.formattedAddress })
             arrayAdapter.filter.filter("")
 
-            if (suggestions.isNotEmpty()) {
-                if (viewModel.editListing.listing.address == suggestions[0].toString()) {
-                    // If the address matches the suggestion, set the latlng
-                    val loc = suggestions[0].toLatLng()
-                    viewModel.editListing.listing.latLng = loc
-                    viewModel.updatePOIs(loc)
-                    // TODO display an error message if the address doesn't match any suggestion
-                } else binding.texteditAddress.showDropDown()
-            }
+            if (suggestions.isNotEmpty()
+                && !binding.texteditAddress.text.toString().equals(suggestions[0].toString(), true)
+            )
+                binding.texteditAddress.showDropDown()
         }
 
         return binding.root
@@ -129,46 +112,41 @@ class EditFragment : Fragment() {
             findNavController().navigate(R.id.action_save)
         }
 
-        // Floating action buttons to add photos
-        binding.fabTakePicture.setOnClickListener { takeImage() }
-        binding.fabAddPicture.setOnClickListener { selectImageFromGallery() }
+        // Show the bottom sheet when clicking on "Add a photo"
+        binding.addPhoto.setOnClickListener {
+            BottomSheetAddPhoto.newInstance().show(
+                childFragmentManager,
+                BottomSheetAddPhoto::class.java.canonicalName
+            )
+        }
 
         // Watch changes to textEdits
         binding.texteditType.doAfterTextChanged {
             viewModel.editListing.listing.type = it.toString()
         }
-
         binding.texteditRooms.doAfterTextChanged {
-            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.numberOfRooms =
-                it.toString().toInt()
+            viewModel.editListing.listing.numberOfRooms = it?.toString()?.toIntOrNull()
         }
         binding.texteditBedrooms.doAfterTextChanged {
-            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.numberOfBedrooms =
-                it.toString().toInt()
+            viewModel.editListing.listing.numberOfBedrooms = it?.toString()?.toIntOrNull()
         }
         binding.texteditBathrooms.doAfterTextChanged {
-            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.numberOfBathrooms =
-                it.toString().toInt()
+            viewModel.editListing.listing.numberOfBathrooms = it?.toString()?.toIntOrNull()
         }
-
+        binding.texteditNeighborhood.doAfterTextChanged {
+            viewModel.editListing.listing.neighborhood = it.toString()
+        }
         binding.texteditDescription.doAfterTextChanged {
             viewModel.editListing.listing.description = it.toString()
         }
         binding.texteditPrice.doAfterTextChanged {
-            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.price =
-                it.toString().toInt()
+            viewModel.editListing.listing.price = it?.toString()?.toIntOrNull()
         }
         binding.texteditArea.doAfterTextChanged {
-            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.area =
-                it.toString().toInt()
-        }
-        binding.texteditRooms.doAfterTextChanged {
-            if (it != null && it.isNotEmpty()) viewModel.editListing.listing.numberOfRooms =
-                it.toString().toInt()
+            viewModel.editListing.listing.area = it.toString().toIntOrNull()
         }
         binding.texteditAddress.doAfterTextChanged {
-            viewModel.updateSuggestions(it.toString())
-            viewModel.editListing.listing.address = it.toString()
+            viewModel.updateAddress(it.toString())
         }
 
         // Click on a date
@@ -178,12 +156,29 @@ class EditFragment : Fragment() {
     private fun bind(listing: Listing) {
         binding.texteditType.setText(listing.type)
         binding.texteditDescription.setText(listing.description)
-        binding.texteditAddress.setText(listing.address)
+        binding.texteditNeighborhood.setText(listing.neighborhood)
+
+        if (listing.address == "" && listing.latLng != LatLng(0.0, 0.0)) {
+            lifecycleScope.launch {
+                binding.texteditAddress.setText(viewModel.findAddress(listing.latLng))
+            }
+        } else binding.texteditAddress.setText(listing.address)
+
+        if (listing.numberOfRooms != null)
         binding.texteditRooms.setText(listing.numberOfRooms.toString())
+
+        if (listing.numberOfBedrooms != null)
         binding.texteditBedrooms.setText(listing.numberOfBedrooms.toString())
+
+        if (listing.numberOfBathrooms != null)
         binding.texteditBathrooms.setText(listing.numberOfBathrooms.toString())
+
+        if (listing.area != null)
         binding.texteditArea.setText(listing.area.toString())
+
+        if (listing.price != null)
         binding.texteditPrice.setText(listing.price.toString())
+
         binding.texteditOnSaleDate.setText(
             SimpleDateFormat(
                 "dd/MM/yyyy",
@@ -215,33 +210,16 @@ class EditFragment : Fragment() {
         activity?.let { datePicker.show(it.supportFragmentManager, "") }
     }
 
-    private fun takeImage() {
-        requireActivity().lifecycleScope.launchWhenStarted {
-            getFileUri().let { uri ->
-                latestTmpUri = uri
-                takeImageResult.launch(uri)
-            }
+    private fun updatePOIs(it: List<PointOfInterest>) {
+        binding.chipgroupPois.removeAllViews()
+        for (place in it) {
+            val chip = Chip(context)
+            chip.text = String.format(
+                resources.getString(R.string.chip),
+                place.name,
+                resources.getStringArray(R.array.poi_types)[place.type]
+            )
+            binding.chipgroupPois.addView(chip)
         }
-    }
-
-    private fun selectImageFromGallery() = selectImageFromGalleryResult.launch("image/*")
-
-    private fun getFileUri(): Uri {
-        val file = File(requireActivity().filesDir, "${UUID.randomUUID()}.jpg")
-
-        return FileProvider.getUriForFile(
-            requireContext(),
-            "${BuildConfig.APPLICATION_ID}.provider",
-            file
-        )
-    }
-
-    private fun insertPhoto(uri: Uri) {
-        val newPhoto = Photo(
-            title = "",
-            uri = uri,
-            listingId = viewModel.editListing.listing.id
-        )
-        viewModel.add(newPhoto)
     }
 }

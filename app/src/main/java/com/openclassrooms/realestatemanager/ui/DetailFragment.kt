@@ -16,6 +16,8 @@ import com.google.android.material.chip.Chip
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding
+import com.openclassrooms.realestatemanager.models.Listing
+import com.openclassrooms.realestatemanager.models.PointOfInterest
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 import java.text.NumberFormat
@@ -49,53 +51,84 @@ class DetailFragment : Fragment() {
         val adapter = PhotoAdapter() {}
         binding.recyclerViewMedia.adapter = adapter
 
-        viewModel.currentListing.observe(viewLifecycleOwner) { item ->
-            // Main data
-            binding.detailDescription.text = item.listing.description
-            binding.detailPrice.text = String.format(
-                resources.getString(R.string.price_format),
-                nFormat.format(item.listing.price)
-            )
-            binding.detailAddress.text = item.listing.address.replace(", ", "\n")
-            binding.detailRooms.text = item.listing.numberOfRooms.toString()
-            binding.detailBedrooms.text = item.listing.numberOfBedrooms.toString()
-            binding.detailBathrooms.text = item.listing.numberOfBathrooms.toString()
-            binding.detailSurface.text = item.listing.area.toString()
-
-            // Photos
-            binding.layoutMedia.visibility = if (item.photos.size > 0) View.VISIBLE else View.GONE
-            adapter.submitList(item.photos)
-
-            // Points of interest
-            binding.layoutPois.visibility = if (item.pois.size > 0) View.VISIBLE else View.GONE
-            binding.chipgroupPois.removeAllViews()
-            for (place in item.pois) {
-                val chip = Chip(context)
-                chip.text = String.format(
-                    resources.getString(R.string.chip),
-                    place.name,
-                    resources.getStringArray(R.array.poi_types)[place.type]
-                )
-                binding.chipgroupPois.addView(chip)
-            }
-
-            // Lite Map
-            val mapFragment = childFragmentManager.findFragmentById(R.id.map_lite) as SupportMapFragment?
-            mapFragment?.getMapAsync { gMap ->
-                gMap.addMarker(
-                    MarkerOptions()
-                        .position(item.listing.latLng)
-                        .title(item.listing.title)
-                )
-                gMap.moveCamera(CameraUpdateFactory.newLatLng(item.listing.latLng))
-            }
+        // Observe Listing
+        viewModel.currentListing.observe(viewLifecycleOwner) { listing ->
+            bind(listing)
+            initLiteMap(listing)
 
             // Edit button
             binding.fabEdit.setOnClickListener {
-                val action = DetailFragmentDirections.actionEdit(item.listing.id)
+                val action = DetailFragmentDirections.actionEdit(listing.id)
                 findNavController().navigate(action)
                 activity?.findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)?.openPane()
             }
+        }
+
+        // Observe Photos
+        viewModel.currentPhotos.observe(viewLifecycleOwner) { photos ->
+            binding.layoutMedia.visibility = if (photos.isNotEmpty()) View.VISIBLE else View.GONE
+            adapter.submitList(photos)
+        }
+
+        // Observe Points of interest
+        viewModel.currentPOIs.observe(viewLifecycleOwner) { pois ->
+            bind(pois)
+        }
+    }
+
+    private fun bind(listing: Listing) {
+        binding.detailDescription.text = listing.description
+
+        binding.detailPrice.text = String.format(
+            resources.getString(R.string.price_format),
+            nFormat.format(listing.price)
+        )
+
+        binding.detailAddress.text = listing.address.replace(", ", "\n")
+        binding.detailRooms.text = listing.numberOfRooms.toString()
+        binding.detailBedrooms.text = listing.numberOfBedrooms.toString()
+        binding.detailBathrooms.text = listing.numberOfBathrooms.toString()
+        binding.detailArea.text = String.format(resources.getString(R.string.area_format),listing.area.toString())
+
+        binding.layoutPrice.visibility = if (listing.price != null) View.VISIBLE else View.GONE
+        binding.layoutArea.visibility = if (listing.area != null) View.VISIBLE else View.GONE
+        binding.layoutRooms.visibility = if (listing.numberOfRooms != null) View.VISIBLE else View.GONE
+        binding.layoutBedrooms.visibility = if (listing.numberOfBedrooms != null) View.VISIBLE else View.GONE
+        binding.layoutBathrooms.visibility = if (listing.numberOfBathrooms != null) View.VISIBLE else View.GONE
+    }
+
+    private fun bind(pois: List<PointOfInterest>) {
+        binding.layoutPois.visibility = if (pois.isNotEmpty()) View.VISIBLE else View.GONE
+        binding.chipgroupPois.removeAllViews()
+        val poiMap = LinkedHashMap<String, Int>()
+        val types = resources.getStringArray(R.array.poi_types)
+
+        for (place in pois) {
+            val x = poiMap[types[place.type]]
+            poiMap[types[place.type]] = (x ?: 0) + 1
+        }
+
+        for (place in poiMap) {
+            val chip = Chip(context)
+            chip.text = String.format(
+                resources.getString(R.string.chip),
+                place.key,
+                place.value
+            )
+            binding.chipgroupPois.addView(chip)
+        }
+    }
+
+    private fun initLiteMap(listing: Listing) {
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_lite) as SupportMapFragment?
+        mapFragment?.getMapAsync { gMap ->
+            gMap.addMarker(
+                MarkerOptions()
+                    .position(listing.latLng)
+                    .title(listing.title)
+            )
+            gMap.moveCamera(CameraUpdateFactory.newLatLng(listing.latLng))
         }
     }
 

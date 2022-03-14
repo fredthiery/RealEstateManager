@@ -13,11 +13,12 @@ import java.util.*
 data class Listing(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
     var type: String = "",
-    var price: Int = 0,
-    var area: Int = 0,
-    var numberOfRooms: Int = 1,
-    var numberOfBedrooms: Int = 0,
-    var numberOfBathrooms: Int = 0,
+    var price: Int? = null,
+    var neighborhood: String = "",
+    var area: Int? = null,
+    var numberOfRooms: Int? = 1,
+    var numberOfBedrooms: Int? = null,
+    var numberOfBathrooms: Int? = null,
     var description: String = "",
     var address: String = "",
     var latLng: LatLng = LatLng(0.0, 0.0),
@@ -29,8 +30,6 @@ data class Listing(
 ) : ClusterItem {
     @Ignore
     var thumbnail: Photo? = null
-    @Ignore
-    var selected: Boolean = false
 
     override fun getPosition(): LatLng {
         return latLng
@@ -40,8 +39,21 @@ data class Listing(
         return type
     }
 
-    override fun getSnippet(): String? {
+    override fun getSnippet(): String {
         return description
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Listing) return false
+
+        if (id != other.id) return false
+        if (type != other.type) return false
+        if (price != other.price) return false
+        if (address != other.address) return false
+        if (thumbnail != other.thumbnail) return false
+
+        return true
     }
 }
 
