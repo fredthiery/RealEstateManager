@@ -9,25 +9,39 @@ data class SearchCriteria(
     var price: MinMax = MinMax(R.string.price),
     var rooms: MinMax = MinMax(R.string.number_of_rooms),
     var photos: MinMax = MinMax(R.string.number_of_photos),
-    var pointsOfInterest: List<String> = ArrayList()
-)
+    var pointsOfInterest: MutableMap<Int, Boolean> = mutableMapOf()
+) {
+    fun clear() {
+        term = ""
+        area.reset()
+        price.reset()
+        rooms.reset()
+        photos.reset()
+        pointsOfInterest.clear()
+    }
+}
 
 data class MinMax(
     var name: Int,
-    var min: Int = 0,
-    var max: Int = Int.MAX_VALUE
+    var min: Int? = null,
+    var max: Int? = null
 ) {
     companion object {
         private val nf: NumberFormat = NumberFormat.getInstance()
     }
 
     fun getMinString(): String {
-        return if (min != 0) nf.format(min)
-        else ""
+        min?.let { return nf.format(it) }
+        return ""
     }
 
     fun getMaxString(): String {
-        return if (max != Int.MAX_VALUE) nf.format(max)
-        else ""
+        max?.let { return nf.format(max) }
+        return ""
+    }
+
+    fun reset() {
+        min = null
+        max = null
     }
 }

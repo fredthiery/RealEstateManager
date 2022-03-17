@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,7 @@ import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 import java.text.NumberFormat
 
-class BottomSheetSearch(
+class BottomSheetSearchMinMax(
     private var criteria: MinMax,
     private var chip: Chip,
     private val unit: Int? = null,
@@ -29,7 +30,7 @@ class BottomSheetSearch(
 
     companion object {
         fun newInstance(criteria: MinMax, chip: Chip, unit: Int?) =
-            BottomSheetSearch(criteria, chip, unit)
+            BottomSheetSearchMinMax(criteria, chip, unit)
     }
 
     private lateinit var binding: BottomSheetSearchMinmaxBinding
@@ -53,50 +54,48 @@ class BottomSheetSearch(
         }
 
         binding.editMin.doAfterTextChanged {
-            val nb: Int = try {
-                nf.parse(it.toString())?.toInt() ?: 0
-            } catch (e: Exception) {
-                0
-            }
+            val nb = it.toInt()
             if (nb != criteria.min) {
                 criteria.min = nb
-                refresh()
+                refreshUI()
             }
         }
 
         binding.editMax.doAfterTextChanged {
-            val nb = try {
-                nf.parse(it.toString())?.toInt() ?: Int.MAX_VALUE
-            } catch (e: Exception) {
-                Int.MAX_VALUE
-            }
+            val nb = it.toInt()
             if (nb != criteria.max) {
                 criteria.max = nb
-                refresh()
+                refreshUI()
             }
         }
 
         chip.setOnCloseIconClickListener {
-            criteria.min = 0
-            criteria.max = Int.MAX_VALUE
-            refresh()
+            criteria.min = null
+            criteria.max = null
+            refreshUI()
         }
 
-        refresh()
+        refreshUI()
     }
 
-    private fun refresh() {
+    private fun Editable?.toInt() = try {
+        nf.parse(this.toString())?.toInt()
+    } catch (e: Exception) {
+        null
+    }
+
+    private fun refreshUI() {
         updateEditText(binding.editMin, criteria.getMinString())
         updateEditText(binding.editMax, criteria.getMaxString())
 
-        if (criteria.min != 0 || criteria.max != Int.MAX_VALUE) {
+        if (criteria.min != null || criteria.max != null) {
             chip.isChecked = true
             chip.isCloseIconVisible = true
-            viewModel.performSearch()
         } else {
             chip.isChecked = false
             chip.isCloseIconVisible = false
         }
+        viewModel.performSearch()
     }
 
     private fun updateEditText(edit: TextInputEditText, text: String) {

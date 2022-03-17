@@ -135,13 +135,18 @@ class DetailFragment : Fragment() {
     private fun initLiteMap(listing: Listing) {
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map_lite) as SupportMapFragment?
-        mapFragment?.getMapAsync { gMap ->
-            gMap.addMarker(
-                MarkerOptions()
-                    .position(listing.latLng)
-                    .title(listing.title)
-            )
-            gMap.moveCamera(CameraUpdateFactory.newLatLng(listing.latLng))
+
+        binding.cardMap.visibility = if (listing.latLng != null) View.VISIBLE else View.GONE
+
+        listing.latLng?.let { latLng ->
+            mapFragment?.getMapAsync { gMap ->
+                gMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(listing.title)
+                )
+                gMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+            }
         }
     }
 

@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -16,6 +18,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import com.openclassrooms.realestatemanager.R
@@ -48,6 +51,12 @@ class MainActivity : AppCompatActivity() {
         val leftPaneNavController =
             (supportFragmentManager.findFragmentById(R.id.left_pane) as NavHostFragment).navController
         setupBottomNavMenu(leftPaneNavController)
+
+        // Connect the SlidingPaneLayout to the system back button.
+        onBackPressedDispatcher.addCallback(
+            this,
+            BackCallback()
+        )
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -63,12 +72,18 @@ class MainActivity : AppCompatActivity() {
         val menuItem = menu?.findItem(R.id.action_search)
         menuItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                binding.chipGroup.visibility = VISIBLE
+                binding.filterChips.visibility = VISIBLE
                 return true
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                binding.chipGroup.visibility = GONE
+                binding.filterChips.visibility = GONE
+                viewModel.resetSearch()
+                binding.chipArea.isCloseIconVisible = false
+                binding.chipPrice.isCloseIconVisible = false
+                binding.chipRooms.isCloseIconVisible = false
+                binding.chipPhotos.isCloseIconVisible = false
+                binding.chipPoi.isCloseIconVisible = false
                 return true
             }
         })
@@ -95,14 +110,18 @@ class MainActivity : AppCompatActivity() {
         setupBottomSheet(viewModel.searchCriteria.price, binding.chipPrice, R.string.dollar)
         setupBottomSheet(viewModel.searchCriteria.rooms, binding.chipRooms, R.string.rooms)
         setupBottomSheet(viewModel.searchCriteria.photos, binding.chipPhotos, R.string.photos)
+        binding.chipPoi.setOnClickListener {
+            BottomSheetSearchPOIs.newInstance(binding.chipPoi)
+                .show(supportFragmentManager, BottomSheetSearchPOIs::class.java.canonicalName)
+        }
 
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun setupBottomSheet(criteria: MinMax, chip: Chip, unit:Int?) {
+    private fun setupBottomSheet(criteria: MinMax, chip: Chip, unit: Int?) {
         chip.setOnClickListener {
-            BottomSheetSearch.newInstance(criteria, chip, unit)
-                .show(supportFragmentManager, BottomSheetSearch::class.java.canonicalName)
+            BottomSheetSearchMinMax.newInstance(criteria, chip, unit)
+                .show(supportFragmentManager, BottomSheetSearchMinMax::class.java.canonicalName)
         }
     }
 
@@ -112,6 +131,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_new -> {
                 binding.rightPane.findNavController().navigate(R.id.edit_dest)
                 binding.slidingPaneLayout.openPane()
+                viewModel.loadListing(null)
             }
             R.id.action_edit -> {}
             R.id.action_search -> {}
@@ -122,5 +142,28 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavMenu(navController: NavController) {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
         bottomNav?.setupWithNavController(navController)
+    }
+
+    inner class BackCallback() :
+        OnBackPressedCallback(binding.slidingPaneLayout.isSlideable && binding.slidingPaneLayout.isOpen),
+        SlidingPaneLayout.PanelSlideListener {
+
+        init {
+            binding.slidingPaneLayout.addPanelSlideListener(this)
+        }
+
+        override fun handleOnBackPressed() {
+            binding.slidingPaneLayout.closePane()
+        }
+
+        override fun onPanelSlide(panel: View, slideOffset: Float) {}
+
+        override fun onPanelOpened(panel: View) {
+            isEnabled = true
+        }
+
+        override fun onPanelClosed(panel: View) {
+            isEnabled = false
+        }
     }
 }

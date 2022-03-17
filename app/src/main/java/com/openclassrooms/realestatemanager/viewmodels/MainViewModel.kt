@@ -10,34 +10,47 @@ import kotlinx.coroutines.launch
 class MainViewModel(private val repository: ListingRepository) : ViewModel() {
 
     var searchCriteria = SearchCriteria()
-    private val _listings: MutableLiveData<List<Listing>> =
-        repository.listings.asLiveData() as MutableLiveData<List<Listing>>
-    val listings: LiveData<List<Listing>>
+    private val _listings: MutableLiveData<List<ListingFull>> =
+        repository.listings.asLiveData() as MutableLiveData<List<ListingFull>>
+    val listings: LiveData<List<ListingFull>>
         get() = _listings
 
-    var editListing = ListingWithPhotos()
-    var selectedItem = 0
-        set(n) {
-            viewModelScope.launch { repository.listings.collect { loadListing(it[n].id) } }
-            field = n
-        }
+    var editListing = ListingFull()
+
+    private val _selectedListing = MutableLiveData<Int?>()
+    val selectedListing: LiveData<Int?>
+        get() = _selectedListing
+    var previousSelected: Int? = null
+        private set
+
     val currentListing = MutableLiveData<Listing>()
     val currentPhotos = MutableLiveData<List<Photo>>()
     val currentPOIs = MutableLiveData<List<PointOfInterest>>()
     val suggestions = MutableLiveData<List<Place>>()
 
-    init {
-        selectedItem = 0
+    fun resetSearch() = viewModelScope.launch {
+        searchCriteria.clear()
+        repository.listings.collect {
+            _listings.value = it
+        }
     }
 
     fun setSearchCriteria(term: String? = null) {
-        if (term != null) searchCriteria.term = term
+        term?.let { searchCriteria.term = it }
         performSearch()
     }
 
     fun performSearch() = viewModelScope.launch {
-        repository.searchListings(searchCriteria).collect { result ->
-            _listings.value = result
+        val result = repository.searchListings(searchCriteria)
+        _listings.value = result
+    }
+
+    fun loadListing(nItem: Int?) = viewModelScope.launch {
+        previousSelected = _selectedListing.value
+        _selectedListing.value = nItem
+
+        if (nItem != null) {
+            listings.value?.get(nItem)?.let { loadListing(it.listing.id) }
         }
     }
 
@@ -54,7 +67,7 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
         currentListing.value = listing
         currentPhotos.value = ArrayList()
         currentPOIs.value = ArrayList()
-        editListing = ListingWithPhotos(listing)
+        editListing = ListingFull(listing)
     }
 
     fun add(photo: Photo) {
@@ -91,7 +104,7 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
                 // Get address suggestions
                 val places = repository.getLocation(address)
                 suggestions.value = places
-                if (places.size == 1 && address.equals(places[0].toString(),true)) {
+                if (places.size == 1 && address.equals(places[0].toString(), true)) {
                     // There's only one suggestion and address is it
                     editListing.listing.latLng = places[0].toLatLng()
                     updatePOIs(places[0].toLatLng())

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,6 +19,8 @@ class ListFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
+    private lateinit var adapter: ListingAdapter
+    private lateinit var slidingPaneLayout: SlidingPaneLayout
 
     private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
@@ -37,21 +38,18 @@ class ListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val slidingPaneLayout = requireActivity().findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)
+        slidingPaneLayout = requireActivity().findViewById(R.id.sliding_pane_layout)
+        adapter = ListingAdapter(viewModel::loadListing)
 
-        val adapter = ListingAdapter(viewModel,slidingPaneLayout)
         binding.listingList.adapter = adapter
 
         slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
 
-        // Connect the SlidingPaneLayout to the system back button.
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            ListOnBackPressedCallback(slidingPaneLayout)
-        )
-
-        viewModel.listings.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+        viewModel.listings.observe(viewLifecycleOwner, adapter::submitList)
+        viewModel.selectedListing.observe(viewLifecycleOwner) {
+            selectItemView(viewModel.previousSelected, false)
+            selectItemView(viewModel.selectedListing.value, !slidingPaneLayout.isSlideable)
+            slidingPaneLayout.openPane()
         }
 
         // Add a divider between items
@@ -60,31 +58,15 @@ class ListFragment : Fragment() {
         binding.listingList.addItemDecoration(dividerItemDecoration)
     }
 
+    private fun selectItemView(selectedItem: Int?, selected: Boolean) {
+        selectedItem?.let {
+            binding.listingList.findViewHolderForAdapterPosition(it)?.itemView?.isSelected = selected
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
 
-class ListOnBackPressedCallback(private val slidingPaneLayout: SlidingPaneLayout) :
-    OnBackPressedCallback(slidingPaneLayout.isSlideable && slidingPaneLayout.isOpen),
-    SlidingPaneLayout.PanelSlideListener {
-
-    init {
-        slidingPaneLayout.addPanelSlideListener(this)
-    }
-
-    override fun handleOnBackPressed() {
-        slidingPaneLayout.closePane()
-    }
-
-    override fun onPanelSlide(panel: View, slideOffset: Float) {}
-
-    override fun onPanelOpened(panel: View) {
-        isEnabled = true
-    }
-
-    override fun onPanelClosed(panel: View) {
-        isEnabled = false
-    }
-}

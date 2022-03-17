@@ -3,19 +3,14 @@ package com.openclassrooms.realestatemanager.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.ItemPhotoBinding
-import com.openclassrooms.realestatemanager.models.Listing
 import com.openclassrooms.realestatemanager.models.Photo
-import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
-import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 
 class PhotoAdapter(private val onItemClicked: (Photo) -> Unit) :
     ListAdapter<Photo, PhotoAdapter.ViewHolder>(PhotoDiffCallback) {

@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.openclassrooms.realestatemanager.R
@@ -152,9 +151,9 @@ class EditFragment : Fragment() {
         binding.texteditDescription.setText(listing.description)
         binding.texteditNeighborhood.setText(listing.neighborhood)
 
-        if (listing.address == "" && listing.latLng != LatLng(0.0, 0.0)) {
+        if (listing.address == "" && listing.latLng != null) {
             lifecycleScope.launch {
-                binding.texteditAddress.setText(viewModel.findAddress(listing.latLng))
+                binding.texteditAddress.setText(viewModel.findAddress(listing.latLng!!))
             }
         } else binding.texteditAddress.setText(listing.address)
 

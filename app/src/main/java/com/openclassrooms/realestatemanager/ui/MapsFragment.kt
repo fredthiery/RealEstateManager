@@ -74,14 +74,15 @@ class MapsFragment : Fragment() {
         googleMap.setOnMapLongClickListener {
             activity?.findNavController(R.id.right_pane)?.navigate(R.id.edit_dest)
             viewModel.editListing(Listing(latLng = it))
-            val slidingPaneLayout = requireActivity().findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)
+            val slidingPaneLayout =
+                requireActivity().findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)
             slidingPaneLayout.openPane()
         }
 
         enableMyLocation()
         viewModel.listings.observe(viewLifecycleOwner) { listings ->
-            updateMarkers(listings)
-            centerCameraAround(listings)
+            updateMarkers(listings.map { it.listing })
+            centerCameraAround(listings.map { it.listing })
         }
     }
 
@@ -89,7 +90,7 @@ class MapsFragment : Fragment() {
         if (listings.isNotEmpty()) {
             val builder = LatLngBounds.builder()
             for (listing in listings) {
-                builder.include(listing.latLng)
+                listing.latLng?.let { builder.include(it) }
             }
             googleMap.animateCamera(
                 CameraUpdateFactory.newLatLngBounds(builder.build(), 200),

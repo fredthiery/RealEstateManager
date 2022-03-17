@@ -26,6 +26,7 @@
         android:gravity="center_vertical"
         android:text="@string/add_photo_from_galery"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:background="?attr/selectableItemBackground"
         app:drawableStartCompat="@drawable/ic_baseline_add_photo_alternat"
         app:drawableTint="?android:attr/textColorPrimary" />
 
@@ -39,6 +40,7 @@
         android:gravity="center_vertical"
         android:text="@string/add_photo_from_camera"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:background="?attr/selectableItemBackground"
         app:drawableStartCompat="@drawable/ic_baseline_add_a_photo"
         app:drawableTint="?android:attr/textColorPrimary" />
 </LinearLayout>

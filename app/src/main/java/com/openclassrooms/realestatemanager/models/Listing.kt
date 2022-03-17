@@ -21,7 +21,7 @@ data class Listing(
     var numberOfBathrooms: Int? = null,
     var description: String = "",
     var address: String = "",
-    var latLng: LatLng = LatLng(0.0, 0.0),
+    var latLng: LatLng? = null,
     var sellStatus: Boolean = false,
     var onSaleDate: Calendar = Calendar.getInstance(),
     var sellDate: Calendar? = null,
@@ -32,7 +32,7 @@ data class Listing(
     var thumbnail: Photo? = null
 
     override fun getPosition(): LatLng {
-        return latLng
+        return latLng ?: LatLng(0.0, 0.0)
     }
 
     override fun getTitle(): String {
@@ -49,6 +49,7 @@ data class Listing(
 
         if (id != other.id) return false
         if (type != other.type) return false
+        if (neighborhood != other.neighborhood) return false
         if (price != other.price) return false
         if (address != other.address) return false
         if (thumbnail != other.thumbnail) return false
@@ -77,11 +78,12 @@ class Converters {
     fun toUri(string: String?): Uri = Uri.parse(string)
 
     @TypeConverter
-    fun fromLatLng(latLng: LatLng): String =
-        latLng.latitude.toString() + "," + latLng.longitude.toString()
+    fun fromLatLng(latLng: LatLng?): String =
+        if (latLng != null) latLng.latitude.toString() + "," + latLng.longitude.toString() else ""
 
     @TypeConverter
-    fun toLatLng(string: String): LatLng {
+    fun toLatLng(string: String): LatLng? {
+        if (string == "") return null
         val strings = string.split(",")
         return LatLng(strings[0].toDouble(), strings[1].toDouble())
     }

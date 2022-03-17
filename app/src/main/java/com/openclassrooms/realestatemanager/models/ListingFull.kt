@@ -3,7 +3,7 @@ package com.openclassrooms.realestatemanager.models
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class ListingWithPhotos(
+data class ListingFull(
     @Embedded
     val listing: Listing = Listing(),
     @Relation(
@@ -15,9 +15,14 @@ data class ListingWithPhotos(
         parentColumn = "id",
         entityColumn = "listingId"
     )
-    var pois: MutableList<PointOfInterest> = mutableListOf()
+    var pois: MutableList<PointOfInterest> = mutableListOf(),
+    @Relation(
+        parentColumn = "thumbnailId",
+        entityColumn = "id"
+    )
+    var thumbnail: Photo? = null
 ) {
-    fun copy(): ListingWithPhotos {
-        return ListingWithPhotos(this.listing.copy(), this.photos.toMutableList(), this.pois.toMutableList())
+    fun copy(): ListingFull {
+        return ListingFull(this.listing.copy(), this.photos.toMutableList(), this.pois.toMutableList())
     }
 }

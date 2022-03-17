@@ -1,38 +1,26 @@
 package com.openclassrooms.realestatemanager.database
 
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.openclassrooms.realestatemanager.models.Listing
-import com.openclassrooms.realestatemanager.models.ListingWithPhotos
+import com.openclassrooms.realestatemanager.models.ListingFull
 import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.models.PointOfInterest
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ListingDao {
+    @Transaction
     @Query("SELECT * FROM listing ORDER BY onSaleDate")
-    fun getAll(): Flow<List<Listing>>
+    fun getAll(): Flow<List<ListingFull>>
 
-    @Query(
-        "SELECT * FROM listing"
-                + " WHERE (type LIKE :search or description LIKE :search or address LIKE :search)"
-                + " AND (area >= :areaMin) AND (area <= :areaMax)"
-                + " AND (price >= :priceMin) AND (price <= :priceMax)"
-                + " AND (numberOfRooms >= :roomsMin) AND (numberOfRooms <= :roomsMax)"
-                + " ORDER BY onSaleDate"
-    )
-    fun searchListings(
-        search: String,
-        areaMin: Int,
-        areaMax: Int,
-        priceMin: Int,
-        priceMax: Int,
-        roomsMin: Int,
-        roomsMax: Int
-    ): Flow<List<Listing>>
+    @Transaction
+    @RawQuery
+    suspend fun searchListings(query: SupportSQLiteQuery): List<ListingFull>
 
     @Transaction
     @Query("SELECT * FROM listing WHERE id=:listingId")
-    fun getListing(listingId: String): Flow<ListingWithPhotos>
+    fun getListing(listingId: String): Flow<ListingFull>
 
     @Query("SELECT * FROM photo WHERE listingId=:listingId")
     fun getPhotos(listingId: String): Flow<List<Photo>>
