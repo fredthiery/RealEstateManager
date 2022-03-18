@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/left_pane_navgraph"
-    app:startDestination="@id/list_dest">
+    app:startDestination="@id/sliding_pane_dest">
 
     <fragment
-        android:id="@+id/list_dest"
+        android:id="@+id/sliding_pane_dest"
         android:name="com.openclassrooms.realestatemanager.ui.ListFragment"
         android:label="@string/list_label"
         tools:layout="@layout/fragment_list">

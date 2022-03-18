@@ -94,6 +94,7 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="8dp"
                         android:text="@string/price"
+                        android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_baseline_sell" />
 
                     <TextView
@@ -115,6 +116,7 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="8dp"
                         android:text="@string/area"
+                        android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_baseline_aspect_ratio" />
 
                     <TextView
@@ -138,6 +140,7 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="8dp"
                         android:text="@string/number_of_rooms"
+                        android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_baseline_meeting_room" />
 
                     <TextView
@@ -159,6 +162,7 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="8dp"
                         android:text="@string/number_of_bedrooms"
+                        android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_baseline_hotel" />
 
                     <TextView
@@ -181,6 +185,7 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="8dp"
                         android:text="@string/number_of_bathrooms"
+                        android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_baseline_bathtub" />
 
                     <TextView
@@ -205,8 +210,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
+                    android:drawablePadding="8dp"
                     android:text="@string/location"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:drawableStartCompat="@drawable/ic_baseline_location"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -215,9 +222,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginEnd="@dimen/container_margin"
-                    android:drawablePadding="8dp"
                     android:gravity="center_vertical"
-                    app:drawableStartCompat="@drawable/ic_baseline_location"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/card_map"
                     app:layout_constraintStart_toStartOf="parent"

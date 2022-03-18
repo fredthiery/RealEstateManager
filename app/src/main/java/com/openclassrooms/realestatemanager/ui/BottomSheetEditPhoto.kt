@@ -13,11 +13,7 @@ import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 
-class BottomSheetEditPhoto(var photo: Photo) : BottomSheetDialogFragment() {
-
-    private val viewModel: MainViewModel by activityViewModels {
-        MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
-    }
+class BottomSheetEditPhoto(var photo: Photo) : BottomSheetBase() {
 
     companion object {
         fun newInstance(photo: Photo) = BottomSheetEditPhoto(photo)

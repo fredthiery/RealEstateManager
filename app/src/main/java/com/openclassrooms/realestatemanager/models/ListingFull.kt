@@ -5,7 +5,7 @@ import androidx.room.Relation
 
 data class ListingFull(
     @Embedded
-    val listing: Listing = Listing(),
+    var listing: Listing = Listing(),
     @Relation(
         parentColumn = "id",
         entityColumn = "listingId"

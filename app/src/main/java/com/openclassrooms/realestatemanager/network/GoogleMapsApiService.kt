@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.repositories
+package com.openclassrooms.realestatemanager.network
 
 import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.models.GoogleMapResponse

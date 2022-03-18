@@ -48,4 +48,8 @@
     <string name="add_photo_from_galery">Depuis la galerie</string>
     <string name="add_photo_from_camera">Depuis l\'appareil photo</string>
     <string name="listing_title">%1$s à %2$s</string>
+    <string name="sliding_pane_label">Real Estate Manager</string>
+    <string name="share">Partager</string>
+    <string name="settings">Préférences</string>
+    <string name="loan_calculator">Simulateur de prêt</string>
 </resources>

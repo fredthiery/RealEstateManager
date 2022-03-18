@@ -74,6 +74,7 @@ class DetailFragment : Fragment() {
         viewModel.currentPOIs.observe(viewLifecycleOwner) { pois ->
             bind(pois)
         }
+        setHasOptionsMenu(true)
     }
 
     private fun bind(listing: Listing) {
@@ -113,21 +114,10 @@ class DetailFragment : Fragment() {
     private fun bind(pois: List<PointOfInterest>) {
         binding.layoutPois.visibility = if (pois.isNotEmpty()) View.VISIBLE else View.GONE
         binding.chipgroupPois.removeAllViews()
-        val poiMap = LinkedHashMap<String, Int>()
-        val types = resources.getStringArray(R.array.poi_types)
 
-        for (place in pois) {
-            val x = poiMap[types[place.type]]
-            poiMap[types[place.type]] = (x ?: 0) + 1
-        }
-
-        for (place in poiMap) {
+        viewModel.getSimplifiedPois(pois, resources.getStringArray(R.array.poi_types)).forEach {
             val chip = Chip(context)
-            chip.text = String.format(
-                resources.getString(R.string.chip),
-                place.key,
-                place.value
-            )
+            chip.text = String.format(resources.getString(R.string.chip), it.key, it.value)
             binding.chipgroupPois.addView(chip)
         }
     }

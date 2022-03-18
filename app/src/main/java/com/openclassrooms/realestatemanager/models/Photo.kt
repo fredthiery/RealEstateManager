@@ -19,7 +19,7 @@ import java.util.*
 data class Photo(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
     var title: String = "",
-    val uri: Uri,
+    val uri: Uri? = null,
     val listingId: String
 ) {
     @Ignore

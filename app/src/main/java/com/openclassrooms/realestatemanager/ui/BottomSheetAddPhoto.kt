@@ -19,11 +19,7 @@ import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 import java.io.File
 import java.util.*
 
-class BottomSheetAddPhoto : BottomSheetDialogFragment() {
-
-    private val viewModel: MainViewModel by activityViewModels {
-        MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
-    }
+class BottomSheetAddPhoto : BottomSheetBase() {
 
     companion object {
         fun newInstance() = BottomSheetAddPhoto()

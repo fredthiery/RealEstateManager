@@ -26,6 +26,7 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentMapsBinding
 import com.openclassrooms.realestatemanager.models.Listing
+import com.openclassrooms.realestatemanager.models.ListingFull
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 
@@ -73,7 +74,7 @@ class MapsFragment : Fragment() {
         // Map click
         googleMap.setOnMapLongClickListener {
             activity?.findNavController(R.id.right_pane)?.navigate(R.id.edit_dest)
-            viewModel.editListing(Listing(latLng = it))
+            viewModel.setCurrentListing(ListingFull(Listing(latLng = it)))
             val slidingPaneLayout =
                 requireActivity().findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)
             slidingPaneLayout.openPane()

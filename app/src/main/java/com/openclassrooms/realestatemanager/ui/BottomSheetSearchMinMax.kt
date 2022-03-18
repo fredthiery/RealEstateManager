@@ -1,12 +1,16 @@
 package com.openclassrooms.realestatemanager.ui
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.R
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.textfield.TextInputEditText
@@ -21,12 +25,9 @@ class BottomSheetSearchMinMax(
     private var criteria: MinMax,
     private var chip: Chip,
     private val unit: Int? = null,
-) : BottomSheetDialogFragment() {
+) : BottomSheetBase() {
 
     private val nf: NumberFormat = NumberFormat.getInstance()
-    private val viewModel: MainViewModel by activityViewModels {
-        MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
-    }
 
     companion object {
         fun newInstance(criteria: MinMax, chip: Chip, unit: Int?) =
@@ -88,13 +89,10 @@ class BottomSheetSearchMinMax(
         updateEditText(binding.editMin, criteria.getMinString())
         updateEditText(binding.editMax, criteria.getMaxString())
 
-        if (criteria.min != null || criteria.max != null) {
-            chip.isChecked = true
-            chip.isCloseIconVisible = true
-        } else {
-            chip.isChecked = false
-            chip.isCloseIconVisible = false
-        }
+        val closeIcon = (criteria.min != null || criteria.max != null)
+        chip.isChecked = closeIcon
+        chip.isCloseIconVisible = closeIcon
+
         viewModel.performSearch()
     }
 

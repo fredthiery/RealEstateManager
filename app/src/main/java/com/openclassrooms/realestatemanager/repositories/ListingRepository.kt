@@ -2,22 +2,23 @@ package com.openclassrooms.realestatemanager.repositories
 
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.google.android.gms.maps.model.LatLng
-import com.openclassrooms.realestatemanager.database.ListingDao
-import com.openclassrooms.realestatemanager.models.Listing
+import com.openclassrooms.realestatemanager.network.ListingDao
 import com.openclassrooms.realestatemanager.models.ListingFull
+import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.models.Place
 import com.openclassrooms.realestatemanager.models.SearchCriteria
+import com.openclassrooms.realestatemanager.network.GoogleMapsApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class ListingRepository(private val listingDao: ListingDao) {
-
-    private val service = GoogleMapsApiService.create()
+class ListingRepository(
+    private val listingDao: ListingDao,
+    private val service: GoogleMapsApiService = GoogleMapsApiService.create()
+) {
 
     val listings: Flow<List<ListingFull>> = listingDao.getAll()
 
     suspend fun searchListings(criteria: SearchCriteria): List<ListingFull> {
-
         val searchPoiTypes = criteria.pointsOfInterest.filter { it.value }.keys
         val term = criteria.term
 
@@ -64,5 +65,9 @@ class ListingRepository(private val listingDao: ListingDao) {
         listingDao.insert(listing.listing)
         listingDao.insertPhotos(listing.photos)
         listingDao.insertPOIs(listing.pois)
+    }
+
+    suspend fun delete(photos: List<Photo>) {
+        listingDao.delete(photos)
     }
 }

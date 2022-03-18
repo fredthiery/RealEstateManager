@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:orderInCategory="3"
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_baseline_share"
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
+    <item
+        android:orderInCategory="4"
+        android:id="@+id/loan_calculator_dest"
+        android:icon="@drawable/ic_baseline_calculate"
+        android:title="@string/loan_calculator"
+        app:showAsAction="ifRoom" />
+    <item
+        android:orderInCategory="5"
+        android:id="@+id/settings_dest"
+        android:icon="@drawable/ic_baseline_settings"
+        android:title="@string/settings"
+        app:showAsAction="ifRoom" />
+</menu>

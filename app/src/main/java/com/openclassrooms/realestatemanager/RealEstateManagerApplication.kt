@@ -1,7 +1,7 @@
 package com.openclassrooms.realestatemanager
 
 import android.app.Application
-import com.openclassrooms.realestatemanager.database.ListingDatabase
+import com.openclassrooms.realestatemanager.network.ListingDatabase
 import com.openclassrooms.realestatemanager.repositories.ListingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob

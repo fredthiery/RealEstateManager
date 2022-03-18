@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.database
+package com.openclassrooms.realestatemanager.network
 
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -44,6 +44,6 @@ interface ListingDao {
     suspend fun insertPOIs(pois: MutableList<PointOfInterest>)
 
     @Delete
-    suspend fun delete(photo: Photo)
+    suspend fun delete(photos: List<Photo>)
 
 }

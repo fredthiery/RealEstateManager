@@ -5,93 +5,133 @@ import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.models.*
 import com.openclassrooms.realestatemanager.repositories.ListingRepository
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: ListingRepository) : ViewModel() {
 
-    var searchCriteria = SearchCriteria()
-    private val _listings: MutableLiveData<List<ListingFull>> =
-        repository.listings.asLiveData() as MutableLiveData<List<ListingFull>>
-    val listings: LiveData<List<ListingFull>>
-        get() = _listings
+    // Livedata list of listings displayed in recycler view
+    private val _listings: MutableLiveData<List<ListingFull>> = MutableLiveData<List<ListingFull>>()
+    val listings: LiveData<List<ListingFull>> get() = _listings
 
+    // The listing currently edited
     var editListing = ListingFull()
 
-    private val _selectedListing = MutableLiveData<Int?>()
-    val selectedListing: LiveData<Int?>
-        get() = _selectedListing
-    var previousSelected: Int? = null
-        private set
+    // Livedata of the current models, displayed by the detail and edit views
+    private val _currentListing = MutableLiveData<Listing>()
+    val currentListing: LiveData<Listing> get() = _currentListing
+    private val _currentPhotos = MutableLiveData<List<Photo>>()
+    val currentPhotos: LiveData<List<Photo>> get() = _currentPhotos
+    private val _currentPOIs = MutableLiveData<List<PointOfInterest>>()
+    val currentPOIs: LiveData<List<PointOfInterest>> get() = _currentPOIs
 
-    val currentListing = MutableLiveData<Listing>()
-    val currentPhotos = MutableLiveData<List<Photo>>()
-    val currentPOIs = MutableLiveData<List<PointOfInterest>>()
-    val suggestions = MutableLiveData<List<Place>>()
+    // Livedata of address suggestions
+    private val _suggestions = MutableLiveData<List<Place>>()
+    val suggestions: LiveData<List<Place>> get() = _suggestions
 
-    fun resetSearch() = viewModelScope.launch {
-        searchCriteria.clear()
-        repository.listings.collect {
-            _listings.value = it
+    // Search criteria
+    var searchCriteria = SearchCriteria()
+
+    // List of photos tagged to delete later
+    private val photosToDelete = mutableListOf<Photo>()
+
+    init {
+        viewModelScope.launch {
+            // Once the listings have been loaded, load the details of the first of the list
+            val result = repository.listings.first { it.isNotEmpty() }
+            _listings.value = result
+            setCurrentListing(result[0])
         }
     }
 
+    /**
+     * Resets the search criteria
+     */
+    fun resetSearch() = viewModelScope.launch {
+        searchCriteria.clear()
+        repository.listings.collect { _listings.value = it }
+    }
+
+    /**
+     * Updates the search term and launches the search
+     */
     fun setSearchCriteria(term: String? = null) {
         term?.let { searchCriteria.term = it }
         performSearch()
     }
 
+    /**
+     * Performs the search according to searchCriteria
+     * Updates livedata
+     */
     fun performSearch() = viewModelScope.launch {
         val result = repository.searchListings(searchCriteria)
         _listings.value = result
     }
 
-    fun loadListing(nItem: Int?) = viewModelScope.launch {
-        previousSelected = _selectedListing.value
-        _selectedListing.value = nItem
-
-        if (nItem != null) {
-            listings.value?.get(nItem)?.let { loadListing(it.listing.id) }
-        }
-    }
-
+    /**
+     * Loads the listing with id from database
+     */
     fun loadListing(id: String) = viewModelScope.launch {
-        repository.getListing(id).collect { result ->
-            currentListing.value = result.listing
-            currentPhotos.value = result.photos
-            currentPOIs.value = result.pois
-            editListing = result.copy()
-        }
+        repository.getListing(id).collect(this@MainViewModel::setCurrentListing)
     }
 
-    fun editListing(listing: Listing) {
-        currentListing.value = listing
-        currentPhotos.value = ArrayList()
-        currentPOIs.value = ArrayList()
-        editListing = ListingFull(listing)
+    /**
+     * Sets the provided ListingFull as the current
+     * Updates livedatas accordingly
+     */
+    fun setCurrentListing(result: ListingFull) {
+        _currentListing.value = result.listing
+        _currentPhotos.value = result.photos
+        _currentPOIs.value = result.pois
+        _suggestions.value = mutableListOf()
+        photosToDelete.clear()
+        editListing = result.copy()
     }
 
+    /**
+     * Adds the photo
+     */
     fun add(photo: Photo) {
         editListing.photos.add(photo)
         if (editListing.photos.size == 1) editListing.listing.thumbnailId = photo.id
-        currentPhotos.value = editListing.photos
+        _currentPhotos.value = editListing.photos
     }
 
+    /**
+     * Updates the photo
+     */
     fun update(photo: Photo) {
         val i = editListing.photos.indexOfFirst { it.id == photo.id }
         editListing.photos[i] = photo.copy()
         editListing.photos = editListing.photos.toMutableList()
-        currentPhotos.value = editListing.photos
+        _currentPhotos.value = editListing.photos
     }
 
+    /**
+     * Marks the provided photo to delete
+     */
     fun delete(photo: Photo) = viewModelScope.launch {
+        photosToDelete.add(photo)
         editListing.photos.remove(photo)
-        currentPhotos.value = editListing.photos
+        _currentPhotos.value = editListing.photos
     }
 
+    /**
+     * Saves the current editListing into room DB
+     */
     fun saveListing() = viewModelScope.launch {
         repository.insert(editListing)
+        repository.delete(photosToDelete)
+        photosToDelete.clear()
     }
 
+    /**
+     * Checks the provided address against Google Maps API
+     * and updates the list of suggestions
+     * If the address matches the only suggestion, updates latLng and POIs
+     * returns false if address is empty or unchanged, true otherwise
+     */
     fun updateAddress(address: String): Boolean {
         return if (address == "" || address.equals(editListing.listing.address, true)) {
             // Address is empty or unchanged
@@ -103,7 +143,7 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
             viewModelScope.launch {
                 // Get address suggestions
                 val places = repository.getLocation(address)
-                suggestions.value = places
+                _suggestions.value = places
                 if (places.size == 1 && address.equals(places[0].toString(), true)) {
                     // There's only one suggestion and address is it
                     editListing.listing.latLng = places[0].toLatLng()
@@ -114,6 +154,9 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
         }
     }
 
+    /**
+     * Retrieves the nearest address to latLng
+     */
     suspend fun findAddress(latLng: LatLng): String {
         return repository.getLocation(latLng)[0].formattedAddress
     }
@@ -141,6 +184,9 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
         "zoo"
     )
 
+    /**
+     * Retrieves a list of points of interest near latLng
+     */
     private fun updatePOIs(latLng: LatLng) = viewModelScope.launch {
         val response = repository.getNearbyPOIs(latLng)
         editListing.pois.clear()
@@ -156,7 +202,21 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
                 )
             )
         }
-        currentPOIs.value = editListing.pois
+        _currentPOIs.value = editListing.pois
+    }
+
+    /**
+     * Given a list of points of interest and a list of types,
+     * returns a map of each type present and its count
+     */
+    fun getSimplifiedPois(pois: List<PointOfInterest>, types: Array<String>): Map<String, Int> {
+        val poiMap = mutableMapOf<String, Int>()
+        for (place in pois) {
+            // for each POI, increment the count of its type
+            val x = poiMap[types[place.type]]
+            poiMap[types[place.type]] = (x ?: 0) + 1
+        }
+        return poiMap
     }
 }
 

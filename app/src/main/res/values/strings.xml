@@ -27,6 +27,7 @@
     <string name="media">Media</string>
     <string name="list_label">List</string>
     <string name="map_label">Map</string>
+    <string name="sliding_pane_label">Real Estate Manager</string>
     <string name="photo_title">Title of the photo</string>
     <string name="choose_this_as_thumbnail">Choose this as thumbnail</string>
     <string name="delete_this_photo">Delete this photo</string>
@@ -48,4 +49,8 @@
     <string name="add_photo_from_galery">From the galery</string>
     <string name="add_photo_from_camera">From the camera</string>
     <string name="listing_title">%1$s in %2$s</string>
+    <string name="share">Share</string>
+    <string name="settings">Settings</string>
+    <string name="loan_calculator">Loan calculator</string>
+
 </resources>

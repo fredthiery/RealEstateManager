@@ -39,29 +39,21 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         slidingPaneLayout = requireActivity().findViewById(R.id.sliding_pane_layout)
-        adapter = ListingAdapter(viewModel::loadListing)
+        adapter = ListingAdapter(viewModel::loadListing,viewModel,slidingPaneLayout)
 
         binding.listingList.adapter = adapter
 
         slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
 
         viewModel.listings.observe(viewLifecycleOwner, adapter::submitList)
-        viewModel.selectedListing.observe(viewLifecycleOwner) {
-            selectItemView(viewModel.previousSelected, false)
-            selectItemView(viewModel.selectedListing.value, !slidingPaneLayout.isSlideable)
-            slidingPaneLayout.openPane()
+        viewModel.currentListing.observe(viewLifecycleOwner) {
+            adapter.notifyDataSetChanged()
         }
 
         // Add a divider between items
         val dividerItemDecoration =
             DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         binding.listingList.addItemDecoration(dividerItemDecoration)
-    }
-
-    private fun selectItemView(selectedItem: Int?, selected: Boolean) {
-        selectedItem?.let {
-            binding.listingList.findViewHolderForAdapterPosition(it)?.itemView?.isSelected = selected
-        }
     }
 
     override fun onDestroyView() {

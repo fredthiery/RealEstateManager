@@ -57,6 +57,7 @@ class EditFragment : Fragment() {
 
         // Edit an existing listing or create a new one
         if (args.listingId == null)
+            // TODO recharger le précédent listing lors de l'annulation
             viewModel.loadListing(UUID.randomUUID().toString())
         else
             viewModel.loadListing(args.listingId!!)

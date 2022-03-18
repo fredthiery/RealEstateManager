@@ -16,12 +16,9 @@ import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 
 class BottomSheetSearchPOIs(
     private var parentChip: Chip,
-) : BottomSheetDialogFragment() {
+) : BottomSheetBase() {
 
     private var nChecked = 0
-    private val viewModel: MainViewModel by activityViewModels {
-        MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
-    }
 
     companion object {
         fun newInstance(chip: Chip) =

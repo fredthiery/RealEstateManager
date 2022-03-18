@@ -4,7 +4,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.gson.annotations.SerializedName
 
 data class GoogleMapResponse(
-    @SerializedName("plus_code") val plusCode: PlusCode? = null,
     val results: List<Place>,
     val status: String
 )
@@ -14,7 +13,6 @@ data class Place(
     @SerializedName("formatted_address") val formattedAddress: String,
     val geometry: Geometry,
     @SerializedName("place_id") val placeId: String? = null,
-    @SerializedName("plus_code") val plusCode: PlusCode? = null,
     val types: List<String> = ArrayList(),
     val name: String = ""
 ) {
@@ -33,16 +31,10 @@ data class AddressComponent(
 )
 
 data class Geometry(
-    val location: Location,
-    @SerializedName("location_type") val locationType: String
+    val location: Location
 )
 
 data class Location(
     val lat: Double,
     val lng: Double
-)
-
-data class PlusCode(
-    @SerializedName("compound_code") val compoundCode: String? = null,
-    @SerializedName("global_code") val globalCode: String? = null
 )
