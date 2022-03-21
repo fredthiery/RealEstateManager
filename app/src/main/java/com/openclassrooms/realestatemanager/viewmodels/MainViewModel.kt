@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.models.*
 import com.openclassrooms.realestatemanager.repositories.ListingRepository
+import com.openclassrooms.realestatemanager.utils.SearchCriteria
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

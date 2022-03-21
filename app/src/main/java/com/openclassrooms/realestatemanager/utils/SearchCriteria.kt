@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.models
+package com.openclassrooms.realestatemanager.utils
 
 import com.openclassrooms.realestatemanager.R
 import java.text.NumberFormat
@@ -36,7 +36,7 @@ data class MinMax(
     }
 
     fun getMaxString(): String {
-        max?.let { return nf.format(max) }
+        max?.let { return nf.format(it) }
         return ""
     }
 

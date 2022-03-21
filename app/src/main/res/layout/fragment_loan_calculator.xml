@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:gravity="center"
+    tools:context=".ui.LoanCalculatorFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/divider"
+        android:gravity="center"
+        android:isScrollContainer="true"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loan_calculator_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <TextView
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:text="@string/loan_calculator_description" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_amount"
+            style="@style/AppTheme.TextInputLayout"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            app:suffixText="@string/dollar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textedit_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/loan_amount"
+                android:inputType="number"
+                android:textAlignment="viewEnd" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_term"
+            style="@style/AppTheme.TextInputLayout"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            app:suffixText="@string/months">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textedit_term"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/term_in_months"
+                android:inputType="number"
+                android:textAlignment="viewEnd" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_rate"
+            style="@style/AppTheme.TextInputLayout"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            app:suffixText="%">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textedit_rate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/interest_rate"
+                android:inputType="number|numberDecimal"
+                android:textAlignment="viewEnd" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_monthly_amount"
+            style="@style/AppTheme.TextInputLayout"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            app:suffixText="@string/dollar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textedit_monthly_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/monthly_amount"
+                android:inputType="number"
+                android:textAlignment="viewEnd" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</ScrollView>

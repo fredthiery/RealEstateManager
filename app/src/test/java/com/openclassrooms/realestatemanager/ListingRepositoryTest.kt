@@ -7,10 +7,10 @@ import com.openclassrooms.realestatemanager.fakes.ListingDaoFake
 import com.openclassrooms.realestatemanager.fakes.ServiceFake
 import com.openclassrooms.realestatemanager.models.*
 import com.openclassrooms.realestatemanager.repositories.ListingRepository
-import kotlinx.coroutines.flow.collect
+import com.openclassrooms.realestatemanager.utils.MinMax
+import com.openclassrooms.realestatemanager.utils.SearchCriteria
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

@@ -52,5 +52,13 @@
     <string name="share">Share</string>
     <string name="settings">Settings</string>
     <string name="loan_calculator">Loan calculator</string>
+    <string name="loan_amount">Loan amount</string>
+    <string name="term_in_months">Term in months</string>
+    <string name="interest_rate">Annual interest rate</string>
+    <string name="months">months</string>
+    <string name="loan_calculator_description">Estimate your monthly payments, depending on the amount you wish to loan and how long you want to pay back.</string>
+    <string name="loan_calculator_title">Loan Calculator</string>
+    <string name="monthly_amount">Monthly amount</string>
+    <string name="interests_result">"You will be paying $ %1$s total in interests"</string>
 
 </resources>

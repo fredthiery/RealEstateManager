@@ -25,5 +25,5 @@
         android:id="@+id/loan_calculator_dest"
         android:name="com.openclassrooms.realestatemanager.ui.LoanCalculatorFragment"
         android:label="@string/loan_calculator"
-        tools:layout="@layout/loan_calculator_fragment" />
+        tools:layout="@layout/fragment_loan_calculator" />
 </navigation>

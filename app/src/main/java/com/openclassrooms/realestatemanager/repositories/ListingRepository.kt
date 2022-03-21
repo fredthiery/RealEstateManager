@@ -6,7 +6,7 @@ import com.openclassrooms.realestatemanager.network.ListingDao
 import com.openclassrooms.realestatemanager.models.ListingFull
 import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.models.Place
-import com.openclassrooms.realestatemanager.models.SearchCriteria
+import com.openclassrooms.realestatemanager.utils.SearchCriteria
 import com.openclassrooms.realestatemanager.network.GoogleMapsApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

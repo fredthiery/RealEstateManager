@@ -1,24 +1,15 @@
 package com.openclassrooms.realestatemanager.ui
 
-import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.activityViewModels
-import com.google.android.material.R
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.textfield.TextInputEditText
-import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.BottomSheetSearchMinmaxBinding
-import com.openclassrooms.realestatemanager.models.MinMax
-import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
-import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
+import com.openclassrooms.realestatemanager.utils.MinMax
 import java.text.NumberFormat
 
 class BottomSheetSearchMinMax(
@@ -26,8 +17,6 @@ class BottomSheetSearchMinMax(
     private var chip: Chip,
     private val unit: Int? = null,
 ) : BottomSheetBase() {
-
-    private val nf: NumberFormat = NumberFormat.getInstance()
 
     companion object {
         fun newInstance(criteria: MinMax, chip: Chip, unit: Int?) =
@@ -79,15 +68,9 @@ class BottomSheetSearchMinMax(
         refreshUI()
     }
 
-    private fun Editable?.toInt() = try {
-        nf.parse(this.toString())?.toInt()
-    } catch (e: Exception) {
-        null
-    }
-
     private fun refreshUI() {
-        updateEditText(binding.editMin, criteria.getMinString())
-        updateEditText(binding.editMax, criteria.getMaxString())
+        binding.editMin.setInt(criteria.min)
+        binding.editMax.setInt(criteria.max)
 
         val closeIcon = (criteria.min != null || criteria.max != null)
         chip.isChecked = closeIcon
@@ -95,9 +78,17 @@ class BottomSheetSearchMinMax(
 
         viewModel.performSearch()
     }
+}
 
-    private fun updateEditText(edit: TextInputEditText, text: String) {
-        edit.setText(text)
-        edit.setSelection(text.length)
-    }
+private fun Editable?.toInt() = try {
+    NumberFormat.getInstance().parse(this.toString())?.toInt()
+} catch (e: Exception) {
+    null
+}
+
+private fun TextInputEditText.setInt(n: Int?) {
+    var string = ""
+    n?.let { string = NumberFormat.getInstance().format(it) }
+    this.setText(string)
+    this.setSelection(string.length)
 }

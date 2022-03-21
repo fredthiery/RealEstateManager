@@ -17,7 +17,7 @@ import com.google.android.material.chip.Chip
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentSlidingPaneBinding
-import com.openclassrooms.realestatemanager.models.MinMax
+import com.openclassrooms.realestatemanager.utils.MinMax
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 
