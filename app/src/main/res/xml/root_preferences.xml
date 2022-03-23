@@ -3,10 +3,20 @@
     <PreferenceCategory app:title="Realtor">
 
         <EditTextPreference
-            app:key="name"
+            app:key="realtor_name"
             app:title="Your name"
             app:useSimpleSummaryProvider="true" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Display preferences">
+        <DropDownPreference
+            app:key="currency"
+            app:title="Currency"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="0"
+            app:entries="@array/currencies"
+            app:entryValues="@array/currency_values"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

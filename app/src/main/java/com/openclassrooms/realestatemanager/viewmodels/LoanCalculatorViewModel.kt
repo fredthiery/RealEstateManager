@@ -32,7 +32,7 @@ class LoanCalculatorViewModel : ViewModel() {
             calculate()
         }
 
-    private var calculateMonthly = false
+    private var calculateMonthly = true
 
     private val _totalAmountLiveData = MutableLiveData<Double>()
     val totalAmountLiveData: LiveData<Double>

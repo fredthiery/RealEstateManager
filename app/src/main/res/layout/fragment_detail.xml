@@ -196,6 +196,29 @@
                         android:layout_marginBottom="8dp" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/layout_realtor"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:text="@string/realtor"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_baseline_person" />
+
+                    <TextView
+                        android:id="@+id/detail_realtor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="48dp"
+                        android:layout_marginBottom="8dp" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout

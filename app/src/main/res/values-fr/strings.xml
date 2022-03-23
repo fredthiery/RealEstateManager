@@ -40,7 +40,7 @@
     <string name="photos">photos</string>
     <string name="min">Min</string>
     <string name="max">Max</string>
-    <string name="price_format">%1$s $</string>
+    <string name="price_format_dollar">%1$s $</string>
     <string name="characteristics">Caractéristiques</string>
     <string name="neighborhood">Quartier</string>
     <string name="area_format">%1$s M²</string>
@@ -52,4 +52,14 @@
     <string name="share">Partager</string>
     <string name="settings">Préférences</string>
     <string name="loan_calculator">Simulateur de prêt</string>
+    <string name="loan_amount">Montant emprunté</string>
+    <string name="term_in_months">Durée en mois</string>
+    <string name="interest_rate">Taux d\'intérêt annuel</string>
+    <string name="months">mois</string>
+    <string name="loan_calculator_description">Estimez le montant de vos remboursements mensuels, selon le montant que vous désirez emprunter et la durée du remboursement.</string>
+    <string name="monthly_amount">Remboursement mensuel</string>
+    <string name="interests_result">Le montant total de vos intérêts est de %1$s %2$s.</string>
+    <string name="sold">Vendu</string>
+    <string name="price_format_euro">%1$s €</string>
+    <string name="realtor">Agent immobilier</string>
 </resources>

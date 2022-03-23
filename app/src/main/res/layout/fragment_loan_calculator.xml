@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/loan_calculator_title"
+            android:text="@string/loan_calculator"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <TextView
@@ -32,8 +32,7 @@
             android:id="@+id/layout_amount"
             style="@style/AppTheme.TextInputLayout"
             android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            app:suffixText="@string/dollar">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textedit_amount"
@@ -71,8 +70,9 @@
                 android:id="@+id/textedit_rate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:digits="0123456789.,"
                 android:hint="@string/interest_rate"
-                android:inputType="number|numberDecimal"
+                android:inputType="numberDecimal"
                 android:textAlignment="viewEnd" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,15 +80,14 @@
             android:id="@+id/layout_monthly_amount"
             style="@style/AppTheme.TextInputLayout"
             android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            app:suffixText="@string/dollar">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textedit_monthly_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/monthly_amount"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:textAlignment="viewEnd" />
         </com.google.android.material.textfield.TextInputLayout>
 

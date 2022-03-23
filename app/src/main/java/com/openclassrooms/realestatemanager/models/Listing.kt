@@ -22,7 +22,6 @@ data class Listing(
     var description: String = "",
     var address: String = "",
     var latLng: LatLng? = null,
-    var sellStatus: Boolean = false,
     var onSaleDate: Calendar = Calendar.getInstance(),
     var sellDate: Calendar? = null,
     var realtor: String? = null,
@@ -53,6 +52,7 @@ data class Listing(
         if (price != other.price) return false
         if (address != other.address) return false
         if (thumbnail != other.thumbnail) return false
+        if (sellDate != other.sellDate) return false
 
         return true
     }

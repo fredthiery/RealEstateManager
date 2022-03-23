@@ -53,8 +53,7 @@
                 style="@style/AppTheme.TextInputLayout"
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
-                app:layout_flexGrow="1"
-                app:prefixText="$">
+                app:layout_flexGrow="1">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textedit_price"
@@ -194,6 +193,7 @@
                         android:id="@+id/textedit_area"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textAlignment="viewEnd"
                         android:hint="@string/area"
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>

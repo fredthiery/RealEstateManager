@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -19,6 +19,7 @@ import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding
 import com.openclassrooms.realestatemanager.models.Listing
 import com.openclassrooms.realestatemanager.models.PointOfInterest
+import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 import java.text.NumberFormat
@@ -87,17 +88,29 @@ class DetailFragment : Fragment() {
 
         binding.detailDescription.text = listing.description
 
+        // Display price in dollar or euro depending on preference
         listing.price?.let {
-            binding.detailPrice.text = String.format(
-                resources.getString(R.string.price_format),
-                nFormat.format(it)
-            )
+            context?.let { context ->
+                val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                when (preferences.getString("currency", "dollar")) {
+                    "euro" -> binding.detailPrice.text = String.format(
+                        resources.getString(R.string.price_format_euro),
+                        nFormat.format(Utils.convertDollarToEuro(it))
+                    )
+                    else -> binding.detailPrice.text = String.format(
+                        resources.getString(R.string.price_format_dollar),
+                        nFormat.format(it)
+                    )
+                }
+            }
         }
 
         binding.detailAddress.text = listing.address.replace(", ", "\n")
         binding.detailRooms.text = listing.numberOfRooms.toString()
         binding.detailBedrooms.text = listing.numberOfBedrooms.toString()
         binding.detailBathrooms.text = listing.numberOfBathrooms.toString()
+        binding.detailRealtor.text = listing.realtor
+
         binding.detailArea.text =
             String.format(resources.getString(R.string.area_format), listing.area.toString())
 

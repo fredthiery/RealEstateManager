@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.google.android.material.textfield.TextInputEditText
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentLoanCalculatorBinding
@@ -16,10 +17,6 @@ import java.text.NumberFormat
 import kotlin.math.roundToInt
 
 class LoanCalculatorFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = LoanCalculatorFragment()
-    }
 
     private lateinit var viewModel: LoanCalculatorViewModel
 
@@ -30,11 +27,36 @@ class LoanCalculatorFragment : Fragment() {
         val binding = FragmentLoanCalculatorBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[LoanCalculatorViewModel::class.java]
 
+        val currency = context?.let {
+            PreferenceManager
+                .getDefaultSharedPreferences(it)
+                .getString("currency", "dollar")
+        } ?: "dollar"
+
+        when (currency) {
+            "euro" -> {
+                binding.layoutAmount.prefixText = ""
+                binding.layoutAmount.suffixText = "€"
+                binding.texteditAmount.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
+                binding.layoutMonthlyAmount.prefixText = ""
+                binding.layoutMonthlyAmount.suffixText = "€"
+                binding.texteditMonthlyAmount.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
+            }
+            else -> {
+                binding.layoutAmount.prefixText = "$"
+                binding.layoutAmount.suffixText = ""
+                binding.texteditAmount.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+                binding.layoutMonthlyAmount.prefixText = "$"
+                binding.layoutMonthlyAmount.suffixText = ""
+                binding.texteditMonthlyAmount.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+            }
+        }
+
         binding.texteditAmount.doAfterTextChanged {
             val view = binding.texteditAmount
             if (view.tag == null) {
                 val n = it.toDouble()
-                view.setDouble(n, 0)
+                view.setDouble(n)
                 viewModel.totalAmount = n
             }
         }
@@ -42,7 +64,7 @@ class LoanCalculatorFragment : Fragment() {
             val view = binding.texteditMonthlyAmount
             if (view.tag == null) {
                 val n = it.toDouble()
-                view.setDouble(n, 0)
+                view.setDouble(n)
                 viewModel.monthlyAmount = n
             }
         }
@@ -63,15 +85,22 @@ class LoanCalculatorFragment : Fragment() {
         }
 
         viewModel.totalAmountLiveData.observe(viewLifecycleOwner) {
-            binding.texteditAmount.setDouble(it, 0)
+            binding.texteditAmount.setInt(it.roundToInt())
         }
 
         viewModel.monthlyAmountLiveData.observe(viewLifecycleOwner) {
-            binding.texteditMonthlyAmount.setDouble(it, 0)
+            binding.texteditMonthlyAmount.setDouble(it)
         }
 
         viewModel.totalInterestLiveData.observe(viewLifecycleOwner) {
-            binding.result.text = String.format(resources.getString(R.string.interests_result), it.roundToInt())
+            binding.result.text = String.format(
+                resources.getString(R.string.interests_result),
+                NumberFormat.getInstance().format(it.roundToInt()),
+                when (currency) {
+                    "euro" -> "€"
+                    else -> "$"
+                }
+            )
         }
 
         return binding.root
@@ -92,14 +121,14 @@ private fun Editable?.toDouble() = try {
 }
 
 private fun TextInputEditText.setInt(n: Int?) {
-    setDouble(n?.toDouble(), 0)
+    setDouble(n?.toDouble())
 }
 
-private fun TextInputEditText.setDouble(n: Double?, precision: Int = 2) {
+private fun TextInputEditText.setDouble(n: Double?) {
     val sel = (text?.length ?: 0) - selectionEnd
 
     val nFormat = NumberFormat.getInstance()
-    nFormat.maximumFractionDigits = precision
+    nFormat.maximumFractionDigits = 2
 
     var string = ""
     n?.let {

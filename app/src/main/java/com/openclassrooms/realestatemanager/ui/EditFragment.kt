@@ -11,14 +11,21 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.TextInputEditText
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.models.Listing
 import com.openclassrooms.realestatemanager.models.PointOfInterest
+import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 import kotlinx.coroutines.launch
@@ -57,7 +64,7 @@ class EditFragment : Fragment() {
 
         // Edit an existing listing or create a new one
         if (args.listingId == null)
-            // TODO recharger le précédent listing lors de l'annulation
+        // TODO recharger le précédent listing lors de l'annulation
             viewModel.loadListing(UUID.randomUUID().toString())
         else
             viewModel.loadListing(args.listingId!!)
@@ -102,6 +109,10 @@ class EditFragment : Fragment() {
 
         // Floating action button to save changes
         binding.fabSave.setOnClickListener {
+            context?.let {
+                val preferences = PreferenceManager.getDefaultSharedPreferences(it)
+                viewModel.editListing.listing.realtor = preferences.getString("realtor_name", "")
+            }
             viewModel.saveListing()
             findNavController().navigate(R.id.action_save)
         }
@@ -133,18 +144,41 @@ class EditFragment : Fragment() {
         binding.texteditDescription.doAfterTextChanged {
             viewModel.editListing.listing.description = it.toString()
         }
-        binding.texteditPrice.doAfterTextChanged {
-            viewModel.editListing.listing.price = it?.toString()?.toIntOrNull()
-        }
         binding.texteditArea.doAfterTextChanged {
             viewModel.editListing.listing.area = it.toString().toIntOrNull()
         }
         binding.texteditAddress.doAfterTextChanged {
-            viewModel.updateAddress(it.toString())
+            lifecycleScope.launch {
+                val latLng = viewModel.updateAddress(it.toString())
+                initLiteMap(latLng, viewModel.editListing.listing.title)
+            }
+        }
+
+        context?.let { context ->
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            // Register text watcher depending on selected currency
+            binding.texteditPrice.doAfterTextChanged(preferences.getString("currency", "dollar"))
         }
 
         // Click on a date
-        binding.texteditOnSaleDate.setOnClickListener { buttonSelectDate() }
+        binding.texteditOnSaleDate.selectDate { viewModel.editListing.listing.onSaleDate = it }
+        binding.texteditSellDate.selectDate { viewModel.editListing.listing.sellDate = it }
+    }
+
+    private fun TextInputEditText.doAfterTextChanged(currency: String?) {
+        when (currency) {
+            "euro" -> {
+                doAfterTextChanged {
+                    viewModel.editListing.listing.price =
+                        Utils.convertEuroToDollar(it?.toString()?.toIntOrNull() ?: 0)
+                }
+            }
+            else -> {
+                doAfterTextChanged {
+                    viewModel.editListing.listing.price = it?.toString()?.toIntOrNull()
+                }
+            }
+        }
     }
 
     private fun bind(listing: Listing) {
@@ -162,14 +196,40 @@ class EditFragment : Fragment() {
         binding.texteditBedrooms.setText(if (listing.numberOfBedrooms != null) listing.numberOfBedrooms.toString() else "")
         binding.texteditBathrooms.setText(if (listing.numberOfBathrooms != null) listing.numberOfBathrooms.toString() else "")
         binding.texteditArea.setText(if (listing.area != null) listing.area.toString() else "")
-        binding.texteditPrice.setText(if (listing.price != null) listing.price.toString() else "")
 
-        binding.texteditOnSaleDate.setText(
-            SimpleDateFormat(
-                "dd/MM/yyyy",
-                Locale.getDefault()
-            ).format(listing.onSaleDate.time)
-        )
+        context?.let {
+            bindPrice(
+                PreferenceManager
+                    .getDefaultSharedPreferences(it)
+                    .getString("currency", "dollar"), listing
+            )
+        }
+
+        binding.texteditOnSaleDate.setTime(listing.onSaleDate.time)
+        listing.sellDate?.let { binding.texteditSellDate.setTime(it.time) }
+
+        initLiteMap(listing.latLng, listing.title)
+    }
+
+    private fun bindPrice(currency: String?, listing: Listing) {
+        when (currency) {
+            "euro" -> {
+                binding.layoutPrice.prefixText = ""
+                binding.layoutPrice.suffixText = "€"
+                binding.texteditPrice.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
+                binding.texteditPrice.setText(
+                    if (listing.price != null)
+                        (Utils.convertDollarToEuro(listing.price!!)).toString()
+                    else ""
+                )
+            }
+            else -> {
+                binding.layoutPrice.prefixText = "$"
+                binding.layoutPrice.suffixText = ""
+                binding.texteditPrice.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+                binding.texteditPrice.setText(if (listing.price != null) listing.price.toString() else "")
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -177,34 +237,54 @@ class EditFragment : Fragment() {
         _binding = null
     }
 
-    private fun buttonSelectDate() {
-        val cal = Calendar.getInstance()
-        val builder = MaterialDatePicker.Builder.datePicker()
-        builder.setSelection(cal.timeInMillis)
-        val datePicker = builder.build()
-        datePicker.addOnPositiveButtonClickListener {
-            cal.timeInMillis = it
-            viewModel.editListing.listing.onSaleDate = cal
-            binding.texteditOnSaleDate.setText(
-                SimpleDateFormat(
-                    "dd/MM/yyyy",
-                    Locale.getDefault()
-                ).format(cal.time)
-            )
+    private fun TextInputEditText.selectDate(callback: (cal: Calendar) -> Unit) {
+        setOnClickListener {
+            val cal = Calendar.getInstance()
+            val builder = MaterialDatePicker.Builder.datePicker()
+            builder.setSelection(cal.timeInMillis)
+            val datePicker = builder.build()
+            datePicker.addOnPositiveButtonClickListener {
+                cal.timeInMillis = it
+                setTime(cal.time)
+                callback(cal)
+            }
+            activity?.let { datePicker.show(it.supportFragmentManager, "") }
         }
-        activity?.let { datePicker.show(it.supportFragmentManager, "") }
     }
 
-    private fun updatePOIs(it: List<PointOfInterest>) {
+    private fun TextInputEditText.setTime(date: Date) {
+        setText(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date))
+    }
+
+    private fun updatePOIs(it: List<PointOfInterest>) = lifecycleScope.launch {
         binding.chipgroupPois.removeAllViews()
-        for (place in it) {
+        val sortedPOIs = it.sortedBy { it.type }
+        for (place in sortedPOIs) {
             val chip = Chip(context)
             chip.text = String.format(
                 resources.getString(R.string.chip),
-                place.name,
-                resources.getStringArray(R.array.poi_types)[place.type]
+                resources.getStringArray(R.array.poi_types)[place.type],
+                place.name
             )
             binding.chipgroupPois.addView(chip)
+        }
+    }
+
+    private fun initLiteMap(latLng: LatLng?, title: String) {
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_lite) as SupportMapFragment?
+
+        binding.cardMap.visibility = if (latLng != null) View.VISIBLE else View.GONE
+
+        latLng?.let {
+            mapFragment?.getMapAsync { gMap ->
+                gMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(title)
+                )
+                gMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+            }
         }
     }
 }

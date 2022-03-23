@@ -41,7 +41,8 @@
     <string name="photos">photos</string>
     <string name="min">Min</string>
     <string name="max">Max</string>
-    <string name="price_format">$ %1$s</string>
+    <string name="price_format_dollar">$ %1$s</string>
+    <string name="price_format_euro">%1$s €</string>
     <string name="characteristics">Characteristics</string>
     <string name="neighborhood">Neighborhood</string>
     <string name="area_format">%1$s M²</string>
@@ -57,8 +58,9 @@
     <string name="interest_rate">Annual interest rate</string>
     <string name="months">months</string>
     <string name="loan_calculator_description">Estimate your monthly payments, depending on the amount you wish to loan and how long you want to pay back.</string>
-    <string name="loan_calculator_title">Loan Calculator</string>
     <string name="monthly_amount">Monthly amount</string>
-    <string name="interests_result">"You will be paying $ %1$s total in interests"</string>
+    <string name="interests_result">"You will be paying %2$s %1$s total in interests"</string>
+    <string name="sold">Sold</string>
+    <string name="realtor">Realtor</string>
 
 </resources>

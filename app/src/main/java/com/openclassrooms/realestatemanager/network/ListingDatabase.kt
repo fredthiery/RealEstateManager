@@ -72,7 +72,6 @@ abstract class ListingDatabase : RoomDatabase() {
                     "Bel appartement de luxe",
                     "3 place du capitole, New York",
                     LatLng(48.845,2.367),
-                    false,
                     cal,
                     null,
                     "Fred"
@@ -92,7 +91,6 @@ abstract class ListingDatabase : RoomDatabase() {
                     "Magnifique maison",
                     "2 rue inconnue, New York",
                     LatLng(48.640,2.256),
-                    false,
                     cal,
                     null,
                     "Fred"

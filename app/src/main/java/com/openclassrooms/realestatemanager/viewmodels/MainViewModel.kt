@@ -133,25 +133,25 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
      * If the address matches the only suggestion, updates latLng and POIs
      * returns false if address is empty or unchanged, true otherwise
      */
-    fun updateAddress(address: String): Boolean {
-        return if (address == "" || address.equals(editListing.listing.address, true)) {
+    suspend fun updateAddress(address: String): LatLng? {
+        if (address == "" || address.equals(editListing.listing.address, true)) {
             // Address is empty or unchanged
             editListing.listing.address = address
-            false
+            return null
         } else {
             // Address has changed
             editListing.listing.address = address
-            viewModelScope.launch {
-                // Get address suggestions
-                val places = repository.getLocation(address)
-                _suggestions.value = places
-                if (places.size == 1 && address.equals(places[0].toString(), true)) {
-                    // There's only one suggestion and address is it
-                    editListing.listing.latLng = places[0].toLatLng()
-                    updatePOIs(places[0].toLatLng())
-                }
+            // Get address suggestions
+            val places = repository.getLocation(address)
+            _suggestions.value = places
+            if (places.size == 1 && address.equals(places[0].toString(), true)) {
+                // There's only one suggestion and address is it
+                val latLng = places[0].toLatLng()
+                editListing.listing.latLng = latLng
+                updatePOIs(latLng)
+                return latLng
             }
-            true
+            return null
         }
     }
 

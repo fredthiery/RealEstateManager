@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListingListBinding
 import com.openclassrooms.realestatemanager.models.ListingFull
+import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import java.text.NumberFormat
 
@@ -50,11 +52,24 @@ class ListingAdapter(
 
             binding.listTitle.text = item.listing.type
             binding.listNeighborhood.text = item.listing.neighborhood
-            item.listing.price?.let {
-                binding.listPrice.text = String.format(
-                    itemView.resources.getString(R.string.price_format),
-                    nFormat.format(it)
-                )
+
+            // If property isn't sold, display price in dollar or euro
+            item.listing.sellDate?.let {
+                binding.listPrice.text = itemView.context.getString(R.string.sold)
+            } ?: item.listing.price?.let {
+                itemView.context?.let { context ->
+                    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    when (preferences.getString("currency", "dollar")) {
+                        "euro" -> binding.listPrice.text = String.format(
+                            context.resources.getString(R.string.price_format_euro),
+                            nFormat.format(Utils.convertDollarToEuro(it))
+                        )
+                        else -> binding.listPrice.text = String.format(
+                            context.resources.getString(R.string.price_format_dollar),
+                            nFormat.format(it)
+                        )
+                    }
+                }
             }
 
             Glide.with(itemView.context)

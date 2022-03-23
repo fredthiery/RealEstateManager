@@ -26,4 +26,12 @@
         <item>Store</item>
         <item>Zoo</item>
     </string-array>
+    <string-array name="currencies">
+        <item>Dollar</item>
+        <item>Euro</item>
+    </string-array>
+    <string-array name="currency_values">
+        <item>dollar</item>
+        <item>euro</item>
+    </string-array>
 </resources>
