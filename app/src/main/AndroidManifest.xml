@@ -33,6 +33,11 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <provider
+            android:name=".provider.ListingContentProvider"
+            android:authorities="com.openclassrooms.savemytrip.provider"
+            android:exported="true"/>
+
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

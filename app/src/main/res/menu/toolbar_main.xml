@@ -2,12 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:orderInCategory="3"
-        android:id="@+id/action_share"
-        android:icon="@drawable/ic_baseline_share"
-        android:title="@string/share"
-        app:showAsAction="ifRoom" />
-    <item
         android:orderInCategory="4"
         android:id="@+id/loan_calculator_dest"
         android:icon="@drawable/ic_baseline_calculate"

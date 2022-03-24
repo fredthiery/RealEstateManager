@@ -137,6 +137,7 @@ class DetailFragment : Fragment() {
     }
 
     private fun initLiteMap(listing: Listing) {
+        // TODO quand on clique, devrait ouvrir la map et zoomer sur la position du marker
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map_lite) as SupportMapFragment?
 

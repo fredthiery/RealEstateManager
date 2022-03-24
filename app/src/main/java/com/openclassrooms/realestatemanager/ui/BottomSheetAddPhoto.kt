@@ -31,11 +31,13 @@ class BottomSheetAddPhoto : BottomSheetBase() {
     private val takeImageResult =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
             if (isSuccess) latestTmpUri?.let(this::insertPhoto)
+            dismiss()
         }
 
     private val selectImageFromGalleryResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let(this::insertPhoto)
+            dismiss()
         }
 
     override fun onCreateView(

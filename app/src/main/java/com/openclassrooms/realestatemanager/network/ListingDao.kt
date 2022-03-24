@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.network
 
+import android.database.Cursor
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.openclassrooms.realestatemanager.models.Listing
@@ -13,6 +14,9 @@ interface ListingDao {
     @Transaction
     @Query("SELECT * FROM listing ORDER BY onSaleDate")
     fun getAll(): Flow<List<ListingFull>>
+
+    @Query("SELECT * FROM listing ORDER BY onSaleDate")
+    fun getAllWithCursor(): Cursor
 
     @Transaction
     @RawQuery
@@ -29,7 +33,7 @@ interface ListingDao {
     suspend fun getPhoto(id: String?): Photo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(listing: Listing)
+    suspend fun insert(listing: Listing): Long
 
     @Update
     suspend fun update(listing: Listing)
