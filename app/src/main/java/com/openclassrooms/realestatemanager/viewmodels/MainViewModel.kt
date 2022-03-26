@@ -15,16 +15,21 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
     private val _listings: MutableLiveData<List<ListingFull>> = MutableLiveData<List<ListingFull>>()
     val listings: LiveData<List<ListingFull>> get() = _listings
 
+    // Livedata of the listing currently displayed in detail view
+    private val _detailListing = MutableLiveData<ListingFull>()
+    val detailListing: LiveData<ListingFull> get() = _detailListing
+
     // The listing currently edited
     var editListing = ListingFull()
 
-    // Livedata of the current models, displayed by the detail and edit views
+    // Livedata of the current models, displayed by edit view
     private val _currentListing = MutableLiveData<Listing>()
     val currentListing: LiveData<Listing> get() = _currentListing
     private val _currentPhotos = MutableLiveData<List<Photo>>()
     val currentPhotos: LiveData<List<Photo>> get() = _currentPhotos
     private val _currentPOIs = MutableLiveData<List<PointOfInterest>>()
     val currentPOIs: LiveData<List<PointOfInterest>> get() = _currentPOIs
+
 
     // Livedata of address suggestions
     private val _suggestions = MutableLiveData<List<Place>>()
@@ -41,6 +46,7 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
             // Once the listings have been loaded, load the details of the first of the list
             val result = repository.listings.first { it.isNotEmpty() }
             _listings.value = result
+            _detailListing.value = result[0]
             setCurrentListing(result[0])
         }
     }
@@ -73,12 +79,21 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
     /**
      * Loads the listing with id from database
      */
-    fun loadListing(id: String) = viewModelScope.launch {
-        repository.getListing(id).collect(this@MainViewModel::setCurrentListing)
+    fun loadDetails(id: Long) = viewModelScope.launch {
+        repository.getListing(id).collect {
+            _detailListing.value = it
+            setCurrentListing(it)
+        }
+    }
+
+    fun editListing(id: Long? = null ) = viewModelScope.launch {
+        if (id != null) repository.getListing(id).collect(this@MainViewModel::setCurrentListing)
+        else setCurrentListing(ListingFull())
     }
 
     /**
      * Sets the provided ListingFull as the current
+     *
      * Updates livedatas accordingly
      */
     fun setCurrentListing(result: ListingFull) {
@@ -125,6 +140,7 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
         repository.insert(editListing)
         repository.delete(photosToDelete)
         photosToDelete.clear()
+        _detailListing.value = editListing
     }
 
     /**

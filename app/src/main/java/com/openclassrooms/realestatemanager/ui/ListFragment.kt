@@ -1,17 +1,18 @@
 package com.openclassrooms.realestatemanager.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
+import com.google.android.material.chip.Chip
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentListBinding
+import com.openclassrooms.realestatemanager.utils.MinMax
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModelFactory
 
@@ -32,6 +33,7 @@ class ListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -39,7 +41,7 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         slidingPaneLayout = requireActivity().findViewById(R.id.sliding_pane_layout)
-        adapter = ListingAdapter(viewModel::loadListing,viewModel,slidingPaneLayout)
+        adapter = ListingAdapter(viewModel::loadDetails,viewModel,slidingPaneLayout)
 
         binding.listingList.adapter = adapter
 

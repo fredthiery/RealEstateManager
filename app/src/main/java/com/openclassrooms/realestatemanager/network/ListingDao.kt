@@ -15,22 +15,22 @@ interface ListingDao {
     @Query("SELECT * FROM listing ORDER BY onSaleDate")
     fun getAll(): Flow<List<ListingFull>>
 
-    @Query("SELECT * FROM listing ORDER BY onSaleDate")
-    fun getAllWithCursor(): Cursor
-
     @Transaction
     @RawQuery
     suspend fun searchListings(query: SupportSQLiteQuery): List<ListingFull>
 
     @Transaction
     @Query("SELECT * FROM listing WHERE id=:listingId")
-    fun getListing(listingId: String): Flow<ListingFull>
+    fun getListing(listingId: Long): Flow<ListingFull>
+
+    @Query("SELECT * FROM listing ORDER BY onSaleDate")
+    fun getAllWithCursor(): Cursor
+
+    @Query("SELECT * FROM listing WHERE id=:listingId")
+    fun getListingWithCursor(listingId: Long): Cursor
 
     @Query("SELECT * FROM photo WHERE listingId=:listingId")
-    fun getPhotos(listingId: String): Flow<List<Photo>>
-
-    @Query("SELECT * FROM photo WHERE id=:id")
-    suspend fun getPhoto(id: String?): Photo?
+    fun getPhotos(listingId: Long): Flow<List<Photo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(listing: Listing): Long

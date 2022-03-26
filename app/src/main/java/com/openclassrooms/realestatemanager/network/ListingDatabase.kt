@@ -61,7 +61,7 @@ abstract class ListingDatabase : RoomDatabase() {
             cal.set(2022, 2, 3, 12, 30)
             listingDao.insert(
                 Listing(
-                    "1",
+                    1L,
                     "Appartement",
                     1500000,
                     "Brooklyn",
@@ -80,7 +80,7 @@ abstract class ListingDatabase : RoomDatabase() {
             cal.set(2022, 1, 7, 10, 0)
             listingDao.insert(
                 Listing(
-                    "2",
+                    2L,
                     "Maison",
                     3000000,
                     "Harlem",

@@ -12,7 +12,7 @@ import java.util.*
 
 @Entity
 data class Listing(
-    @PrimaryKey val id: String = UUID.randomUUID().toString(),
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     var type: String = "",
     var price: Int? = null,
     var neighborhood: String = "",
@@ -26,7 +26,7 @@ data class Listing(
     var onSaleDate: Calendar = Calendar.getInstance(),
     var sellDate: Calendar? = null,
     var realtor: String? = null,
-    var thumbnailId: String? = null
+    var thumbnailId: Long? = null
 ) : ClusterItem {
     @Ignore
     var thumbnail: Photo? = null
@@ -79,7 +79,7 @@ data class Listing(
                 onSaleDate = onSaleDate,
                 sellDate = sellDate,
                 realtor = values.getString("realtor"),
-                thumbnailId = values.getString("thumbnailId")
+                thumbnailId = values.getLong("thumbnailId")
             )
         }
     }
@@ -128,8 +128,8 @@ class Converters {
         if (latLng != null) latLng.latitude.toString() + "," + latLng.longitude.toString() else ""
 
     @TypeConverter
-    fun toLatLng(string: String): LatLng? {
-        if (string == "") return null
+    fun toLatLng(string: String?): LatLng? {
+        if (string == "" || string == null) return null
         val strings = string.split(",")
         return LatLng(strings[0].toDouble(), strings[1].toDouble())
     }

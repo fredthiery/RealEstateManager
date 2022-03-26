@@ -3,14 +3,11 @@ package com.openclassrooms.realestatemanager.ui
 import android.os.Bundle
 import android.view.*
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.google.android.material.chip.Chip
@@ -25,6 +22,7 @@ class SlidingPaneFragment : Fragment() {
 
     private var _binding: FragmentSlidingPaneBinding? = null
     private val binding get() = _binding!!
+    private var myMenu: Menu? = null
 
     private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
@@ -36,6 +34,8 @@ class SlidingPaneFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSlidingPaneBinding.inflate(inflater, container, false)
+
+        binding.filterChips.visibility = View.GONE
 
         // Connect the SlidingPaneLayout to the system back button.
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -52,16 +52,27 @@ class SlidingPaneFragment : Fragment() {
             childFragmentManager.findFragmentById(R.id.left_pane) as NavHostFragment
         binding.bottomNavView.setupWithNavController(navHostFragment.navController)
 
-        val appBarConfiguration = AppBarConfiguration(binding.rightPane.findNavController().graph)
-        setupActionBarWithNavController(
-            activity as AppCompatActivity,
-            binding.rightPane.findNavController(),
-            appBarConfiguration
-        )
         setHasOptionsMenu(true)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_new -> {
+                viewModel.editListing()
+                binding.rightPane.findNavController().navigate(R.id.edit_dest)
+                binding.slidingPaneLayout.openPane()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        myMenu = menu
         inflater.inflate(R.menu.toolbar_detail, menu)
 
         // Search
@@ -111,22 +122,6 @@ class SlidingPaneFragment : Fragment() {
         return super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_new -> {
-                binding.rightPane.findNavController().navigate(R.id.edit_dest)
-                binding.slidingPaneLayout.openPane()
-                viewModel.loadListing("")
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     private fun setupBottomSheet(criteria: MinMax, chip: Chip, unit: Int?) {
         chip.setOnClickListener {
             BottomSheetSearchMinMax.newInstance(criteria, chip, unit).show(
@@ -135,6 +130,7 @@ class SlidingPaneFragment : Fragment() {
             )
         }
     }
+
 
     inner class BackCallback() :
         OnBackPressedCallback(binding.slidingPaneLayout.isSlideable && binding.slidingPaneLayout.isOpen),
@@ -151,10 +147,20 @@ class SlidingPaneFragment : Fragment() {
         override fun onPanelSlide(panel: View, slideOffset: Float) {}
 
         override fun onPanelOpened(panel: View) {
+            myMenu?.findItem(R.id.action_search)?.isVisible = false
+            myMenu?.findItem(R.id.action_new)?.isVisible = false
+
+            (activity as MainActivity).showUpButton(true)
+
             isEnabled = true
         }
 
         override fun onPanelClosed(panel: View) {
+            myMenu?.findItem(R.id.action_search)?.isVisible = true
+            myMenu?.findItem(R.id.action_new)?.isVisible = true
+
+            (activity as MainActivity).showUpButton(false)
+
             isEnabled = false
         }
     }

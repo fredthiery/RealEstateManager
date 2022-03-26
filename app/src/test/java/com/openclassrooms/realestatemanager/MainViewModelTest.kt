@@ -52,16 +52,16 @@ class MainViewModelTest {
 
     @Test
     fun loadListingTest() = runBlocking {
-        classUnderTest.loadListing("listing1")
+        classUnderTest.loadDetails(1L)
         assertThat(classUnderTest.currentListing.value?.address).isEqualTo("2 rue quelconque, 75002 Paris")
     }
 
     @Test
     fun setCurrentListingTest() {
         val listing = ListingFull(
-            Listing("listing3","Apartment", address = "4 avenue perdue, 75004 Paris"),
-            mutableListOf(Photo("photo3",title = "TestPhoto", listingId = "listing3")),
-            mutableListOf(PointOfInterest("poi3","TestPOI",3, LatLng(0.0,0.0),"listing3"))
+            Listing(3L,"Apartment", address = "4 avenue perdue, 75004 Paris"),
+            mutableListOf(Photo(3L,title = "TestPhoto", listingId = 3L)),
+            mutableListOf(PointOfInterest(3L,"TestPOI",3, LatLng(0.0,0.0),3L))
         )
         classUnderTest.setCurrentListing(listing)
         assertThat(classUnderTest.currentListing.value?.address).isEqualTo("4 avenue perdue, 75004 Paris")
@@ -72,14 +72,14 @@ class MainViewModelTest {
 
     @Test
     fun addAndDeletePhotoTest() = runBlocking{
-        val photo = Photo("photo3",title = "TestPhoto", listingId = "listing2")
+        val photo = Photo(3L,title = "TestPhoto", listingId = 2L)
         // Add photo to editListing
         classUnderTest.add(photo)
         assertThat(classUnderTest.editListing.photos).contains(photo)
 
         // Save editListing
         classUnderTest.saveListing()
-        classUnderTest.loadListing("listing2")
+        classUnderTest.loadDetails(2L)
         assertThat(classUnderTest.currentPhotos.value).contains(photo)
 
         // Delete photo
@@ -88,7 +88,7 @@ class MainViewModelTest {
 
         // Save editListing
         classUnderTest.saveListing()
-        classUnderTest.loadListing("listing2")
+        classUnderTest.loadDetails(2L)
         assertThat(classUnderTest.currentPhotos.value).doesNotContain(photo)
     }
 
@@ -107,19 +107,17 @@ class MainViewModelTest {
             geometry = Geometry(Location(48.858370, 2.294481))
         )
 
-        classUnderTest.loadListing("listing0")
+        classUnderTest.loadDetails(0L)
         // Address is unchanged
         var result = classUnderTest.updateAddress("1 rue de nulle part, 75001 Paris")
-        assertThat(result).isFalse()
+        assertThat(result).isNull()
 
         // Address is modified, a suggestion should be thrown
         result = classUnderTest.updateAddress("2 rue quelconque, 75002 Paris")
-        assertThat(result).isTrue()
         assertThat(classUnderTest.suggestions.value).contains(place)
 
         // Address is the same as suggested, add a Point of interest
         result = classUnderTest.updateAddress(place.formattedAddress)
-        assertThat(result).isTrue()
         assertThat(classUnderTest.editListing.listing.latLng).isEqualTo(LatLng(48.858370, 2.294481))
         assertThat(classUnderTest.currentPOIs.value?.get(0)?.name).isEqualTo("Tour Eiffel")
     }

@@ -103,6 +103,8 @@ class LoanCalculatorFragment : Fragment() {
             )
         }
 
+        (activity as MainActivity).showUpButton(true)
+
         return binding.root
     }
 

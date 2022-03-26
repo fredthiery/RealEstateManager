@@ -1,11 +1,8 @@
 package com.openclassrooms.realestatemanager.models
 
 import android.net.Uri
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity(
@@ -17,10 +14,10 @@ import java.util.*
     )]
 )
 data class Photo(
-    @PrimaryKey val id: String = UUID.randomUUID().toString(),
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     var title: String = "",
     val uri: Uri? = null,
-    val listingId: String
+    @ColumnInfo(index = true) val listingId: Long
 ) {
     @Ignore
     var thumbnail: Boolean = false

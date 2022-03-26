@@ -36,7 +36,6 @@ class EditFragment : Fragment() {
 
     private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!
-    private val args: EditFragmentArgs by navArgs()
 
     private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
@@ -61,13 +60,6 @@ class EditFragment : Fragment() {
         binding.recyclerViewMedia.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerViewMedia.adapter = adapter
-
-        // Edit an existing listing or create a new one
-        if (args.listingId == null)
-        // TODO recharger le précédent listing lors de l'annulation
-            viewModel.loadListing(UUID.randomUUID().toString())
-        else
-            viewModel.loadListing(args.listingId!!)
 
         // Observe the models
         viewModel.currentListing.observe(viewLifecycleOwner, this::bind)
@@ -114,7 +106,7 @@ class EditFragment : Fragment() {
                 viewModel.editListing.listing.realtor = preferences.getString("realtor_name", "")
             }
             viewModel.saveListing()
-            findNavController().navigate(R.id.action_save)
+            findNavController().navigateUp()
         }
 
         // Show the bottom sheet when clicking on "Add a photo"

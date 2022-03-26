@@ -13,7 +13,7 @@ class ListingTest {
 
     private val classUnderTest =
         Listing(
-            "0",
+            0L,
             "House",
             100000,
             "New York",
@@ -24,7 +24,6 @@ class ListingTest {
             "Beautiful house",
             "1 rue de nulle part, 75001 Paris",
             LatLng(48.858370, 2.294481),
-            sellStatus = false,
             onSaleDate = Calendar.Builder().setDate(2022,3,14).build(),
             null,
             "Realtor"

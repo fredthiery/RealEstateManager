@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.models
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -15,9 +16,9 @@ import java.util.*
     )]
 )
 data class PointOfInterest(
-    @PrimaryKey val id: String = UUID.randomUUID().toString(),
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val type: Int,
     val latLng: LatLng,
-    val listingId: String
+    @ColumnInfo(index = true) val listingId: Long
 )

@@ -17,7 +17,7 @@ import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 import java.text.NumberFormat
 
 class ListingAdapter(
-    private val onItemClicked: (String) -> Unit,
+    private val onItemClicked: (Long) -> Unit,
     private val viewModel: MainViewModel,
     private val slidingPaneLayout: SlidingPaneLayout
 ) :

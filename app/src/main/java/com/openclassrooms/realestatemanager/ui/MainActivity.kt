@@ -8,6 +8,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
 
@@ -27,6 +28,10 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = binding.mainNavHost.findNavController()
         appBarConfiguration = AppBarConfiguration(binding.mainNavHost.findNavController().graph)
+
+        // TODO pas encore parfaitement fonctionnel
+        onBackPressed()
+
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
@@ -39,5 +44,9 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val navController = findNavController(R.id.main_nav_host)
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+    }
+
+    fun showUpButton(b: Boolean) {
+        supportActionBar!!.setDisplayHomeAsUpEnabled(b)
     }
 }

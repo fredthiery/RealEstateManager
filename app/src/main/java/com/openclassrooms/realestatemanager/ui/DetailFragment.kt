@@ -4,8 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import androidx.navigation.NavOptions
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,28 +59,23 @@ class DetailFragment : Fragment() {
         binding.recyclerViewMedia.adapter = adapter
 
         // Observe Listing
-        viewModel.currentListing.observe(viewLifecycleOwner) { listing ->
-            bind(listing)
-            initLiteMap(listing)
+        viewModel.detailListing.observe(viewLifecycleOwner) { listing ->
+            bind(listing.listing)
+            initLiteMap(listing.listing)
+
+            binding.layoutMedia.visibility =
+                if (listing.photos.isNotEmpty()) View.VISIBLE else View.GONE
+            adapter.submitList(listing.photos)
+
+            bind(listing.pois)
 
             // Edit button
             binding.fabEdit.setOnClickListener {
-                val action = DetailFragmentDirections.actionEdit(listing.id)
-                findNavController().navigate(action)
+                findNavController().navigate( R.id.action_edit )
                 activity?.findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)?.openPane()
             }
         }
 
-        // Observe Photos
-        viewModel.currentPhotos.observe(viewLifecycleOwner) { photos ->
-            binding.layoutMedia.visibility = if (photos.isNotEmpty()) View.VISIBLE else View.GONE
-            adapter.submitList(photos)
-        }
-
-        // Observe Points of interest
-        viewModel.currentPOIs.observe(viewLifecycleOwner) { pois ->
-            bind(pois)
-        }
         setHasOptionsMenu(true)
     }
 

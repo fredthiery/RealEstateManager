@@ -6,19 +6,23 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
+import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.models.Listing
 import com.openclassrooms.realestatemanager.network.ListingDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+
 
 class ListingContentProvider : ContentProvider() {
-    private val authority = "com.openclassrooms.realestatemanager.provider"
-    private val tableName: String = Listing::class.java.simpleName
 
-    private val database =
-        context?.let { ListingDatabase.getDatabase(it, CoroutineScope(SupervisorJob())) }
+    companion object {
+        const val AUTHORITY = "com.openclassrooms.realestatemanager.provider.ListingContentProvider"
+        private val TABLE_NAME: String = Listing::class.java.simpleName
+        val uriItem: Uri = Uri.parse("content://$AUTHORITY/$TABLE_NAME")
+        var database: ListingDatabase? = null
+
+    }
 
     override fun onCreate(): Boolean {
+        database = (context?.applicationContext as RealEstateManagerApplication).database
         return true
     }
 
@@ -41,7 +45,7 @@ class ListingContentProvider : ContentProvider() {
     }
 
     override fun getType(uri: Uri): String? {
-        return "vnd.android.cursor.item/$authority.$tableName";
+        return "vnd.android.cursor.item/$AUTHORITY.$TABLE_NAME";
     }
 
     override fun insert(uri: Uri, contentValues: ContentValues?): Uri? {
@@ -62,6 +66,6 @@ class ListingContentProvider : ContentProvider() {
         selectionArgs: Array<out String>?
     ): Int {
         val db = database?.openHelper?.writableDatabase
-        return db?.update("listing",0,contentValues,selection,selectionArgs) ?: 0
+        return db?.update("listing", 0, contentValues, selection, selectionArgs) ?: 0
     }
 }

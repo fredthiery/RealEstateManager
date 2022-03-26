@@ -1,6 +1,8 @@
 package com.openclassrooms.realestatemanager.fakes
 
+import android.database.Cursor
 import android.net.Uri
+import android.test.mock.MockCursor
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.models.Listing
@@ -13,36 +15,36 @@ import kotlinx.coroutines.flow.flowOf
 
 class ListingDaoFake : ListingDao {
     private val listing1 =
-        Listing(id = "listing0", type = "House", address = "1 rue de nulle part, 75001 Paris")
+        Listing(id = 0L, type = "House", address = "1 rue de nulle part, 75001 Paris")
     private val listing2 =
-        Listing(id = "listing1", type = "Apartment", address = "2 rue quelconque, 75002 Paris")
+        Listing(id = 1L, type = "Apartment", address = "2 rue quelconque, 75002 Paris")
     private val listing3 =
-        Listing(id = "listing2", type = "House", address = "3 rue inconnue, 75003 Paris")
+        Listing(id = 2L, type = "House", address = "3 rue inconnue, 75003 Paris")
 
-    private val photo1 = Photo(id = "photo0", uri = Uri.parse("testuri/1"), listingId = "0")
-    private val photo2 = Photo(id = "photo1", uri = Uri.parse("testuri/2"), listingId = "1")
-    private val photo3 = Photo(id = "photo2", uri = Uri.parse("testuri/3"), listingId = "2")
+    private val photo1 = Photo(id = 0L, uri = Uri.parse("testuri/1"), listingId = 0L)
+    private val photo2 = Photo(id = 1L, uri = Uri.parse("testuri/2"), listingId = 1L)
+    private val photo3 = Photo(id = 2L, uri = Uri.parse("testuri/3"), listingId = 2L)
 
     private val poi1 = PointOfInterest(
-        id = "poi0",
+        id = 0L,
         name = "Eiffel Tower",
         type = 4,
         latLng = LatLng(0.0, 0.0),
-        listingId = "0"
+        listingId = 0L
     )
     private val poi2 = PointOfInterest(
-        id = "poi1",
+        id = 1L,
         name = "Arc de triomphe",
         type = 6,
         latLng = LatLng(0.1, 0.1),
-        listingId = "1"
+        listingId = 1L
     )
     private val poi3 = PointOfInterest(
-        id = "poi2",
+        id = 2L,
         name = "Statue de la liberté",
         type = 7,
         latLng = LatLng(0.5, 0.2),
-        listingId = "2"
+        listingId = 2L
     )
 
     private val listingList = mutableListOf(
@@ -59,23 +61,25 @@ class ListingDaoFake : ListingDao {
         return listingList
     }
 
-    override fun getListing(listingId: String): Flow<ListingFull> {
+    override fun getListing(listingId: Long): Flow<ListingFull> {
         return flowOf(listingList.find { it.listing.id == listingId }!!)
     }
 
-    override fun getPhotos(listingId: String): Flow<List<Photo>> {
+    override fun getAllWithCursor(): Cursor {
+        return MockCursor()
+    }
+
+    override fun getListingWithCursor(listingId: Long): Cursor {
+        return MockCursor()
+    }
+
+    override fun getPhotos(listingId: Long): Flow<List<Photo>> {
         return flowOf(listingList.find { it.listing.id == listingId }!!.photos)
     }
 
-    override suspend fun getPhoto(id: String?): Photo? {
-        for (listing in listingList) {
-            return listing.photos.find { it.id == id }
-        }
-        return null
-    }
-
-    override suspend fun insert(listing: Listing) {
+    override suspend fun insert(listing: Listing): Long {
         listingList.add(ListingFull(listing))
+        return 0L
     }
 
     override suspend fun update(listing: Listing) {

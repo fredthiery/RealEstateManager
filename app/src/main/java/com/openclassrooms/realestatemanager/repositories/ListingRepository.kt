@@ -1,13 +1,14 @@
 package com.openclassrooms.realestatemanager.repositories
 
+import android.database.Cursor
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.google.android.gms.maps.model.LatLng
-import com.openclassrooms.realestatemanager.network.ListingDao
 import com.openclassrooms.realestatemanager.models.ListingFull
 import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.models.Place
-import com.openclassrooms.realestatemanager.utils.SearchCriteria
 import com.openclassrooms.realestatemanager.network.GoogleMapsApiService
+import com.openclassrooms.realestatemanager.network.ListingDao
+import com.openclassrooms.realestatemanager.utils.SearchCriteria
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -45,8 +46,8 @@ class ListingRepository(
             }
     }
 
-    fun getListing(id: String): Flow<ListingFull> {
-        return listingDao.getListing(id).map { it ?: ListingFull() }
+    fun getListing(id: Long): Flow<ListingFull> {
+        return listingDao.getListing(id)
     }
 
     suspend fun getLocation(address: String): List<Place> {

@@ -45,19 +45,19 @@ class ListingRepositoryTest {
 
     @Test
     fun getListingTest() = runBlocking {
-        val result = classUnderTest.getListing("listing0").first()
+        val result = classUnderTest.getListing(0L).first()
         assertThat(result.listing.type).isEqualTo("House")
     }
 
     @Test
     fun insertListingTest() = runBlocking {
         val listing = ListingFull(
-            Listing("listing3","Apartment", address = "4 avenue perdue, 75004 Paris"),
-            mutableListOf(Photo("photo3",title = "TestPhoto", listingId = "listing3")),
-            mutableListOf(PointOfInterest("poi3","TestPOI",3, LatLng(0.0,0.0),"listing3"))
+            Listing(3L,"Apartment", address = "4 avenue perdue, 75004 Paris"),
+            mutableListOf(Photo(3L,title = "TestPhoto", listingId = 3L)),
+            mutableListOf(PointOfInterest(3L,"TestPOI",3, LatLng(0.0,0.0),3L))
         )
         classUnderTest.insert(listing)
-        val result = classUnderTest.getListing("listing3").first()
+        val result = classUnderTest.getListing(3L).first()
         assertThat(result.listing.address).isEqualTo("4 avenue perdue, 75004 Paris")
     }
 

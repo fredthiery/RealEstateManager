@@ -67,13 +67,16 @@ class MapsFragment : Fragment() {
 
         // Marker click
         clusterManager.setOnClusterItemClickListener { listing ->
-            viewModel.loadListing(listing.id)
+            viewModel.loadDetails(listing.id)
+            val slidingPaneLayout =
+                requireActivity().findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)
+            slidingPaneLayout.openPane()
             true
         }
 
         // Map click
         googleMap.setOnMapLongClickListener {
-            activity?.findNavController(R.id.right_pane)?.navigate(R.id.edit_dest)
+            activity?.findNavController(R.id.main_nav_host)?.navigate(R.id.edit_dest)
             viewModel.setCurrentListing(ListingFull(Listing(latLng = it)))
             val slidingPaneLayout =
                 requireActivity().findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)

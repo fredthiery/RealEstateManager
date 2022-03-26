@@ -35,8 +35,9 @@
 
         <provider
             android:name=".provider.ListingContentProvider"
-            android:authorities="com.openclassrooms.savemytrip.provider"
-            android:exported="true"/>
+            android:authorities="${applicationId}.provider.ListingContentProvider"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity
             android:name=".ui.MainActivity"
