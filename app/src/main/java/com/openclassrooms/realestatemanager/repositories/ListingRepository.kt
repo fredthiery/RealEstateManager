@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.repositories
 
-import android.database.Cursor
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.models.ListingFull
@@ -10,7 +9,6 @@ import com.openclassrooms.realestatemanager.network.GoogleMapsApiService
 import com.openclassrooms.realestatemanager.network.ListingDao
 import com.openclassrooms.realestatemanager.utils.SearchCriteria
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class ListingRepository(
     private val listingDao: ListingDao,
@@ -34,16 +32,16 @@ class ListingRepository(
         query += " ORDER BY onSaleDate"
 
         return listingDao.searchListings(SimpleSQLiteQuery(query))
-            .filter { it.photos.size >= criteria.photos.min ?: 0 }
-            .filter { it.photos.size <= criteria.photos.max ?: Int.MAX_VALUE }
-            .filter { listing ->
-                // Keeps only the listings containing all POIs requested
-                if (searchPoiTypes.isEmpty()) true
-                else {
-                    val listingPoiTypes = listing.pois.map { it.type }
-                    listingPoiTypes.containsAll(searchPoiTypes)
+                .filter { it.photos.size >= criteria.photos.min ?: 0 }
+                .filter { it.photos.size <= criteria.photos.max ?: Int.MAX_VALUE }
+                .filter { listing ->
+                    // Keeps only the listings containing all POIs requested
+                    if (searchPoiTypes.isEmpty()) true
+                    else {
+                        val listingPoiTypes = listing.pois.map { it.type }
+                        listingPoiTypes.containsAll(searchPoiTypes)
+                    }
                 }
-            }
     }
 
     fun getListing(id: Long): Flow<ListingFull> {
@@ -63,9 +61,9 @@ class ListingRepository(
     }
 
     suspend fun insert(listing: ListingFull) {
-        listingDao.insert(listing.listing)
-        listingDao.insertPhotos(listing.photos)
-        listingDao.insertPOIs(listing.pois)
+        val listingId = listingDao.insert(listing.listing)
+        listingDao.insertPhotos(listing.photos.onEach { it.listingId = listingId })
+        listingDao.insertPOIs(listing.pois.onEach { it.listingId = listingId })
     }
 
     suspend fun delete(photos: List<Photo>) {

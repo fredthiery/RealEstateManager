@@ -17,5 +17,5 @@ data class Photo(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     var title: String = "",
     val uri: Uri? = null,
-    @ColumnInfo(index = true) val listingId: Long
+    @ColumnInfo(index = true) var listingId: Long
 )

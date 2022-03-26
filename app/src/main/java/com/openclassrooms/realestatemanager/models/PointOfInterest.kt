@@ -20,7 +20,7 @@ data class PointOfInterest(
     val name: String,
     val type: Int,
     val latLng: LatLng,
-    @ColumnInfo(index = true) val listingId: Long
+    @ColumnInfo(index = true) var listingId: Long
 ) {
     companion object {
         val filter = listOf(
