@@ -5,13 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
-import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,7 +55,7 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = PhotoAdapter {}
+        val adapter = PhotoAdapter(viewModel, false) {}
         binding.recyclerViewMedia.adapter = adapter
 
         // Observe Listing
@@ -76,7 +71,7 @@ class DetailFragment : Fragment() {
 
             // Edit button
             binding.fabEdit.setOnClickListener {
-                findNavController().navigate( R.id.action_edit )
+                findNavController().navigate(R.id.action_edit)
                 activity?.findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)?.openPane()
             }
         }

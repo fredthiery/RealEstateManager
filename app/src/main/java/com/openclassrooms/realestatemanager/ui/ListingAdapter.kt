@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.preference.PreferenceManager
@@ -72,8 +73,10 @@ class ListingAdapter(
                 }
             }
 
+            // If thumbnail is set, load it, otherwise load the first photo
+            val uri = item.thumbnail?.uri ?: item.photos.getOrNull(0)?.uri ?: Uri.EMPTY
             Glide.with(itemView.context)
-                .load(item.thumbnail?.uri)
+                .load(uri)
                 .placeholder(R.drawable.ic_placeholder_building)
                 .apply(RequestOptions.centerCropTransform())
                 .into(binding.listPhoto)

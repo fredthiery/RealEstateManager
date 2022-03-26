@@ -28,8 +28,6 @@ data class Listing(
     var realtor: String? = null,
     var thumbnailId: Long? = null
 ) : ClusterItem {
-    @Ignore
-    var thumbnail: Photo? = null
 
     override fun getPosition(): LatLng {
         return latLng ?: LatLng(0.0, 0.0)
@@ -52,7 +50,7 @@ data class Listing(
         if (neighborhood != other.neighborhood) return false
         if (price != other.price) return false
         if (address != other.address) return false
-        if (thumbnail != other.thumbnail) return false
+        if (thumbnailId != other.thumbnailId) return false
         if (sellDate != other.sellDate) return false
 
         return true

@@ -40,7 +40,7 @@ class BottomSheetEditPhoto(var photo: Photo) : BottomSheetBase() {
         }
 
         binding.actionSelectThumbnail.setOnClickListener {
-            viewModel.editListing.listing.thumbnailId = photo.id
+            viewModel.setThumbnail(photo.id)
         }
 
         binding.actionDelete.setOnClickListener {

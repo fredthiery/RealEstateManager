@@ -18,7 +18,4 @@ data class Photo(
     var title: String = "",
     val uri: Uri? = null,
     @ColumnInfo(index = true) val listingId: Long
-) {
-    @Ignore
-    var thumbnail: Boolean = false
-}
+)

@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,6 +23,7 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.models.Listing
+import com.openclassrooms.realestatemanager.models.Photo
 import com.openclassrooms.realestatemanager.models.PointOfInterest
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
@@ -42,13 +41,7 @@ class EditFragment : Fragment() {
         MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
     }
 
-    private val adapter = PhotoAdapter() {
-        // When clicking on a photo in the recyclerView, show the bottom sheet
-        BottomSheetEditPhoto.newInstance(it).show(
-            childFragmentManager,
-            BottomSheetEditPhoto::class.java.canonicalName
-        )
-    }
+    private lateinit var adapter: PhotoAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +50,21 @@ class EditFragment : Fragment() {
     ): View {
         _binding = FragmentEditBinding.inflate(inflater, container, false)
 
+        adapter = PhotoAdapter(viewModel, true) {
+            // When clicking on a photo in the recyclerView, show the bottom sheet
+            if (it.uri == null) {
+                BottomSheetAddPhoto.newInstance().show(
+                    childFragmentManager,
+                    BottomSheetAddPhoto::class.java.canonicalName
+                )
+            } else {
+                BottomSheetEditPhoto.newInstance(it).show(
+                    childFragmentManager,
+                    BottomSheetEditPhoto::class.java.canonicalName
+                )
+            }
+        }
+
         // Recycler view for displaying photos
         binding.recyclerViewMedia.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -64,7 +72,11 @@ class EditFragment : Fragment() {
 
         // Observe the models
         viewModel.currentListing.observe(viewLifecycleOwner, this::bind)
-        viewModel.currentPhotos.observe(viewLifecycleOwner, adapter::submitList)
+        viewModel.currentPhotos.observe(viewLifecycleOwner) {
+            val list = it.toMutableList()
+            list.add(0, Photo(id = 0L, title = resources.getString(R.string.add_a_photo), null, 0L))
+            adapter.submitList(list)
+        }
         viewModel.currentPOIs.observe(viewLifecycleOwner, this::updatePOIs)
 
         // Populate property type suggestions
@@ -108,14 +120,6 @@ class EditFragment : Fragment() {
             }
             viewModel.saveListing()
             findNavController().navigateUp()
-        }
-
-        // Show the bottom sheet when clicking on "Add a photo"
-        binding.addPhoto.setOnClickListener {
-            BottomSheetAddPhoto.newInstance().show(
-                childFragmentManager,
-                BottomSheetAddPhoto::class.java.canonicalName
-            )
         }
 
         // Watch changes to textEdits
@@ -175,6 +179,7 @@ class EditFragment : Fragment() {
     }
 
     private fun bind(listing: Listing) {
+        adapter.notifyDataSetChanged()
         binding.texteditType.setText(listing.type)
         binding.texteditDescription.setText(listing.description)
         binding.texteditNeighborhood.setText(listing.neighborhood)

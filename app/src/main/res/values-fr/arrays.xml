@@ -10,23 +10,61 @@
     <string-array name="poi_types">
         <item>Aéroport</item>
         <item>Parc d\'attraction</item>
+        <item>Aquarium</item>
+        <item>Galerie d\'art</item>
+        <item>Boulangerie</item>
         <item>Banque</item>
+        <item>Bar</item>
+        <item>Salon de beauté</item>
+        <item>Magasin de vélos</item>
+        <item>Librairie</item>
+        <item>Bowling</item>
+        <item>Café</item>
+        <item>Casino</item>
         <item>Église</item>
+        <item>Hotel de ville</item>
+        <item>Magasin de vêtements</item>
+        <item>Épicerie</item>
+        <item>Grand magasin</item>
         <item>Médecin</item>
-        <item>Pompiers</item>
-        <item>Station Service</item>
+        <item>Pharmacie</item>
+        <item>Magasin d\'électronique</item>
+        <item>Embassade</item>
+        <item>Caserne de pompiers</item>
+        <item>Floriste</item>
+        <item>Magasin de meubles</item>
         <item>Gymnase</item>
+        <item>Salon de coiffure</item>
+        <item>Quincaillerie</item>
+        <item>Magasin d\'articles pour la maison</item>
         <item>Hôpital</item>
         <item>Bibliothèque</item>
+        <item>Mosquée</item>
+        <item>Cinéma</item>
         <item>Musée</item>
+        <item>Night club</item>
         <item>Parc</item>
+        <item>Parking</item>
+        <item>Animalerie</item>
+        <item>Pharmacie</item>
         <item>Police</item>
-        <item>Bureau de Poste</item>
+        <item>Bureau de poste</item>
+        <item>École primaire</item>
         <item>Restaurant</item>
         <item>École</item>
-        <item>Centre Commercial</item>
+        <item>Collège</item>
+        <item>Magasin de chaussures</item>
+        <item>Centre commercial</item>
+        <item>Spa</item>
         <item>Stade</item>
         <item>Magasin</item>
+        <item>Station de métro</item>
+        <item>Supermarché</item>
+        <item>Synagogue</item>
+        <item>Attraction touristique</item>
+        <item>Gare</item>
+        <item>Université</item>
+        <item>Vétérinaire</item>
         <item>Zoo</item>
     </string-array>
     <string-array name="currencies">

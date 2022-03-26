@@ -14,7 +14,7 @@ interface GoogleMapsApiService {
     @GET("geocode/json?key=" + BuildConfig.MAPS_API_KEY)
     suspend fun getPlaceByLatLng(@Query("latlng") latlng: String?): GoogleMapResponse
 
-    @GET("place/nearbysearch/json?key=" + BuildConfig.MAPS_API_KEY + "&radius=1000")
+    @GET("place/nearbysearch/json?key=" + BuildConfig.MAPS_API_KEY + "&radius=3000")
     suspend fun getNearbyPOIs(@Query("location") latlng: String?): GoogleMapResponse
 
     companion object {

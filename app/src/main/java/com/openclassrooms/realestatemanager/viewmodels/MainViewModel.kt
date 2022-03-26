@@ -48,6 +48,7 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
             _listings.value = result
             _detailListing.value = result[0]
             setCurrentListing(result[0])
+            resetSearch()
         }
     }
 
@@ -86,7 +87,7 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
         }
     }
 
-    fun editListing(id: Long? = null ) = viewModelScope.launch {
+    fun editListing(id: Long? = null) = viewModelScope.launch {
         if (id != null) repository.getListing(id).collect(this@MainViewModel::setCurrentListing)
         else setCurrentListing(ListingFull())
     }
@@ -110,8 +111,13 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
      */
     fun add(photo: Photo) {
         editListing.photos.add(photo)
-        if (editListing.photos.size == 1) editListing.listing.thumbnailId = photo.id
+        _currentListing.value = editListing.listing
         _currentPhotos.value = editListing.photos
+    }
+
+    fun setThumbnail(id: Long) {
+        editListing.listing.thumbnailId = id
+        _currentListing.value = editListing.listing
     }
 
     /**
@@ -178,29 +184,6 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
         return repository.getLocation(latLng)[0].formattedAddress
     }
 
-    private val typeFilter = listOf(
-        "airport",
-        "amusement_park",
-        "bank",
-        "church",
-        "doctor",
-        "fire_station",
-        "gas_station",
-        "gym",
-        "hospital",
-        "library",
-        "museum",
-        "park",
-        "police",
-        "post_office",
-        "restaurant",
-        "school",
-        "shopping_mall",
-        "stadium",
-        "store",
-        "zoo"
-    )
-
     /**
      * Retrieves a list of points of interest near latLng
      */
@@ -208,8 +191,8 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
         val response = repository.getNearbyPOIs(latLng)
         editListing.pois.clear()
         for (place in response) {
-            val type = place.types.find { typeFilter.contains(it) }
-            val typeId = typeFilter.indexOf(type)
+            val type = place.types.find { PointOfInterest.filter.contains(it) }
+            val typeId = PointOfInterest.filter.indexOf(type)
             if (type != null) editListing.pois.add(
                 PointOfInterest(
                     name = place.name,

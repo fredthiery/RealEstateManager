@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +12,13 @@ import com.bumptech.glide.request.RequestOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemPhotoBinding
 import com.openclassrooms.realestatemanager.models.Photo
+import com.openclassrooms.realestatemanager.viewmodels.MainViewModel
 
-class PhotoAdapter(private val onItemClicked: (Photo) -> Unit) :
+class PhotoAdapter(
+    private val viewModel: MainViewModel,
+    private val editMode: Boolean,
+    private val onItemClicked: (Photo) -> Unit
+) :
     ListAdapter<Photo, PhotoAdapter.ViewHolder>(PhotoDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,14 +40,18 @@ class PhotoAdapter(private val onItemClicked: (Photo) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Photo) {
+
             Glide.with(itemView.context)
                 .load(item.uri)
-                .placeholder(R.drawable.ic_placeholder_building)
+                .placeholder(if (item.uri == null) R.drawable.ic_add_a_photo else R.drawable.ic_placeholder_building)
                 .apply(RequestOptions.centerCropTransform())
                 .into(binding.image)
             binding.title.text = item.title
             binding.title.visibility = if (item.title != "") View.VISIBLE else View.INVISIBLE
-            if (item.thumbnail) binding.cardView.isChecked = true
+
+            viewModel.currentListing.value?.thumbnailId?.let {
+                binding.cardView.isChecked = editMode && item.id == it && it != 0L
+            }
         }
     }
 }
