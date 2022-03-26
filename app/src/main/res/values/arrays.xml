@@ -3,6 +3,9 @@
     <string-array name="property_types">
         <item>House</item>
         <item>Apartment</item>
+        <item>Loft</item>
+        <item>Manor</item>
+        <item>Studio</item>
     </string-array>
     <string-array name="poi_types">
         <item>Airport</item>
@@ -33,5 +36,15 @@
     <string-array name="currency_values">
         <item>dollar</item>
         <item>euro</item>
+    </string-array>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Reply</item>
+        <item>Reply to all</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>reply</item>
+        <item>reply_all</item>
     </string-array>
 </resources>

@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -270,6 +271,8 @@ class EditFragment : Fragment() {
 
         latLng?.let {
             mapFragment?.getMapAsync { gMap ->
+                gMap.setOnMapClickListener {}
+                gMap.uiSettings.isMapToolbarEnabled = false
                 gMap.addMarker(
                     MarkerOptions()
                         .position(latLng)

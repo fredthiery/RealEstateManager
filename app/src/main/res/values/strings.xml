@@ -62,5 +62,8 @@
     <string name="interests_result">"You will be paying %2$s %1$s total in interests"</string>
     <string name="sold">Sold</string>
     <string name="realtor">Realtor</string>
+    <string name="your_name">Your name</string>
+    <string name="currency">Currency</string>
+    <string name="display_settings">Display preferences</string>
 
 </resources>

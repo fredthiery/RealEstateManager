@@ -14,4 +14,17 @@
         android:icon="@drawable/ic_baseline_add"
         android:title="@string/add_a_listing"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_loan_calculator"
+        android:icon="@drawable/ic_baseline_calculate"
+        android:orderInCategory="4"
+        android:title="@string/loan_calculator"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_baseline_settings"
+        android:orderInCategory="5"
+        android:title="@string/settings"
+        app:showAsAction="never" />
 </menu>

@@ -3,6 +3,9 @@
     <string-array name="property_types" >
         <item>Maison</item>
         <item>Appartement</item>
+        <item>Loft</item>
+        <item>Manoir</item>
+        <item>Studio</item>
     </string-array>
     <string-array name="poi_types">
         <item>Aéroport</item>

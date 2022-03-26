@@ -1,22 +1,22 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="Realtor">
+    <PreferenceCategory app:title="@string/realtor">
 
         <EditTextPreference
             app:key="realtor_name"
-            app:title="Your name"
+            app:title="@string/your_name"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Display preferences">
+    <PreferenceCategory app:title="@string/display_settings">
         <DropDownPreference
-            app:key="currency"
-            app:title="Currency"
-            app:useSimpleSummaryProvider="true"
             app:defaultValue="0"
             app:entries="@array/currencies"
-            app:entryValues="@array/currency_values"/>
+            app:entryValues="@array/currency_values"
+            app:key="currency"
+            app:title="@string/currency"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +35,10 @@ class DetailFragment : Fragment() {
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
     private val nFormat: NumberFormat = NumberFormat.getInstance()
+    private val prefListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { preferences, key ->
+            if (key.equals("currency")) viewModel.detailListing.value?.let { bind(it.listing) }
+        }
 
     private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory((activity?.application as RealEstateManagerApplication).repository)
@@ -75,6 +80,9 @@ class DetailFragment : Fragment() {
                 activity?.findViewById<SlidingPaneLayout>(R.id.sliding_pane_layout)?.openPane()
             }
         }
+
+        PreferenceManager.getDefaultSharedPreferences(requireContext())
+            .registerOnSharedPreferenceChangeListener(prefListener)
 
         setHasOptionsMenu(true)
     }
@@ -137,7 +145,6 @@ class DetailFragment : Fragment() {
     }
 
     private fun initLiteMap(listing: Listing) {
-        // TODO quand on clique, devrait ouvrir la map et zoomer sur la position du marker
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map_lite) as SupportMapFragment?
 
@@ -145,6 +152,8 @@ class DetailFragment : Fragment() {
 
         listing.latLng?.let { latLng ->
             mapFragment?.getMapAsync { gMap ->
+                gMap.setOnMapClickListener {}
+                gMap.uiSettings.isMapToolbarEnabled = false
                 gMap.addMarker(
                     MarkerOptions()
                         .position(latLng)
