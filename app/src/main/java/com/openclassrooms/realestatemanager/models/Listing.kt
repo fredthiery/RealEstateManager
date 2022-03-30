@@ -12,7 +12,7 @@ import java.util.*
 
 @Entity
 data class Listing(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE,
     var type: String = "",
     var price: Int? = null,
     var neighborhood: String = "",

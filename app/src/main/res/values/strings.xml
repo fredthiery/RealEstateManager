@@ -65,5 +65,6 @@
     <string name="your_name">Your name</string>
     <string name="currency">Currency</string>
     <string name="display_settings">Display preferences</string>
+    <string name="listing_saved">Listing saved</string>
 
 </resources>

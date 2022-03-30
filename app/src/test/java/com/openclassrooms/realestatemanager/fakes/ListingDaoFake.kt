@@ -79,7 +79,7 @@ class ListingDaoFake : ListingDao {
 
     override suspend fun insert(listing: Listing): Long {
         listingList.add(ListingFull(listing))
-        return 0L
+        return listing.id
     }
 
     override suspend fun update(listing: Listing) {

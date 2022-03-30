@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.preference.PreferenceManager
@@ -49,7 +48,8 @@ class ListingAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ListingFull) {
-            itemView.isSelected = item.listing.id == viewModel.currentListing.value?.id && !slidingPaneLayout.isSlideable
+            itemView.isSelected =
+                item.listing.id == viewModel.currentListing.value?.id && !slidingPaneLayout.isSlideable
 
             binding.listTitle.text = item.listing.type
             binding.listNeighborhood.text = item.listing.neighborhood
@@ -74,9 +74,10 @@ class ListingAdapter(
             }
 
             // If thumbnail is set, load it, otherwise load the first photo
-            val uri = item.thumbnail?.uri ?: item.photos.getOrNull(0)?.uri ?: Uri.EMPTY
+            val thumbnail = item.thumbnail ?: item.photos.getOrNull(0)
+
             Glide.with(itemView.context)
-                .load(uri)
+                .load(thumbnail?.uri)
                 .placeholder(R.drawable.ic_placeholder_building)
                 .apply(RequestOptions.centerCropTransform())
                 .into(binding.listPhoto)

@@ -41,10 +41,12 @@ class BottomSheetEditPhoto(var photo: Photo) : BottomSheetBase() {
 
         binding.actionSelectThumbnail.setOnClickListener {
             viewModel.setThumbnail(photo.id)
+            dismiss()
         }
 
         binding.actionDelete.setOnClickListener {
             viewModel.delete(photo)
+            dismiss()
         }
     }
 }

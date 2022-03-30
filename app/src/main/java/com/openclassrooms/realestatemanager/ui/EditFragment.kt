@@ -118,7 +118,7 @@ class EditFragment : Fragment() {
                 val preferences = PreferenceManager.getDefaultSharedPreferences(it)
                 viewModel.editListing.listing.realtor = preferences.getString("realtor_name", "")
             }
-            viewModel.saveListing()
+            viewModel.saveListing(resources.getString(R.string.listing_saved))
             findNavController().navigateUp()
         }
 

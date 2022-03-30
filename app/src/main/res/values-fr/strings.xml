@@ -65,4 +65,5 @@
     <string name="your_name">Votre nom</string>
     <string name="currency">Devise</string>
     <string name="display_settings">Préférences d\'affichage</string>
+    <string name="listing_saved">Annonce sauvegardée</string>
 </resources>

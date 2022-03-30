@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.ui
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -20,9 +19,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.preference.PreferenceManager
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.RealEstateManagerApplication
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
@@ -35,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    private val viewModel: MainViewModel by viewModels() {
+    private val viewModel: MainViewModel by viewModels {
         MainViewModelFactory((application as RealEstateManagerApplication).repository)
     }
 
@@ -55,6 +54,13 @@ class MainActivity : AppCompatActivity() {
         )
 
         onBackPressedDispatcher.addCallback(this, BackCallback())
+
+        viewModel.message.observe(this) {
+            it?.let {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                viewModel.snackBarShown()
+            }
+        }
 
         setContentView(binding.root)
     }
@@ -153,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(b)
     }
 
-    inner class BackCallback() :
+    inner class BackCallback :
         OnBackPressedCallback(binding.slidingPaneLayout.isSlideable && binding.slidingPaneLayout.isOpen),
         SlidingPaneLayout.PanelSlideListener {
 

@@ -74,6 +74,7 @@ class MainViewModelTest {
     fun addAndDeletePhotoTest() = runBlocking{
         val photo = Photo(3L,title = "TestPhoto", listingId = 2L)
         // Add photo to editListing
+        classUnderTest.editListing(2L)
         classUnderTest.add(photo)
         assertThat(classUnderTest.editListing.photos).contains(photo)
 

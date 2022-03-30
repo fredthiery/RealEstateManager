@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.viewmodels
 
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.models.*
 import com.openclassrooms.realestatemanager.repositories.ListingRepository
 import com.openclassrooms.realestatemanager.utils.SearchCriteria
@@ -30,6 +31,8 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
     private val _currentPOIs = MutableLiveData<List<PointOfInterest>>()
     val currentPOIs: LiveData<List<PointOfInterest>> get() = _currentPOIs
 
+    private val _message = MutableLiveData<String?>()
+    val message: LiveData<String?> get() = _message
 
     // Livedata of address suggestions
     private val _suggestions = MutableLiveData<List<Place>>()
@@ -142,11 +145,12 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
     /**
      * Saves the current editListing into room DB
      */
-    fun saveListing() = viewModelScope.launch {
+    fun saveListing(message: String? = null) = viewModelScope.launch {
+        _detailListing.value = editListing
         repository.insert(editListing)
         repository.delete(photosToDelete)
         photosToDelete.clear()
-        _detailListing.value = editListing
+        _message.value = message
     }
 
     /**
@@ -217,6 +221,10 @@ class MainViewModel(private val repository: ListingRepository) : ViewModel() {
             poiMap[types[place.type]] = (x ?: 0) + 1
         }
         return poiMap
+    }
+
+    fun snackBarShown() {
+        _message.value = null
     }
 }
 
