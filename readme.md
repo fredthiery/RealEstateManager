@@ -20,8 +20,8 @@ Il s’agit d’une application de gestion de biens immobiliers à destination d
 
 ### Sur téléphone
 
-<img src="readme.assets/Screenshot_1648541752.png" style="zoom:25%;" /> <img src="readme.assets/Screenshot_1651049974.png" style="zoom:25%;" /> <img src="readme.assets/Screenshot_1648541766.png" style="zoom:25%;" /> <img src="readme.assets/Screenshot_1648541789.png" style="zoom:25%;" /> 
+![](readme.assets/Screenshot_1648541752.png) ![](readme.assets/Screenshot_1651049974.png) ![](readme.assets/Screenshot_1648541766.png) ![](readme.assets/Screenshot_1648541789.png)
 
 ### Sur tablette
 
-<img src="readme.assets/Screenshot_1648542152.png" style="zoom: 33%;" />
+![](readme.assets/Screenshot_1648542152.png)
